@@ -28,8 +28,6 @@ services:
     routes:
       - path: /
         destination: /login.html
-      - path: /*
-        destination: /index.html
 
 env:
   - key: RENDER_EXTERNAL_HOSTNAME

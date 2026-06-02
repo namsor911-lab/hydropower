@@ -33,6 +33,14 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 // Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
+// Serve frontend static files from the frontend folder
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Root should serve the login page by default
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/login.html'));
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/transactions', transactionRoutes);

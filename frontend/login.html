@@ -276,7 +276,7 @@
           
           // Redirect to dashboard
           setTimeout(() => {
-            window.location.href = '/frontend/index.html';
+            window.location.href = '/index.html';
           }, 500);
         } else {
           throw new Error('Invalid response from server');
@@ -293,7 +293,7 @@
     // Check if already logged in
     const token = localStorage.getItem('authToken');
     if (token) {
-      window.location.href = '/frontend/index.html';
+      window.location.href = '/index.html';
     }
   </script>
 </body>

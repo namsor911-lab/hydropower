@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HR / Payroll — Namsor Hydropower</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0d1117;
+      --bg2: #161b22;
+      --bg3: #1c2128;
+      --border: #30363d;
+      --txt: #e6edf3;
+      --txt2: #8b949e;
+      --green: #3fb950;
+      --blue: #58a6ff;
+      --red: #f85149;
+      --r: 10px;
+      --font: 'IBM Plex Sans Thai', sans-serif;
+      --mono: 'IBM Plex Mono', monospace;
+    }
+    body { font-family: var(--font); background: var(--bg); color: var(--txt); min-height: 100vh; }
+    .page { max-width: 1320px; margin: 0 auto; padding: 18px; }
+    .topbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; margin-bottom: 18px; }
+    .topbar h1 { font-size: 20px; font-weight: 700; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; border-radius: 999px; font-weight: 600; font-size: 13px; cursor: pointer; border: 1px solid transparent; transition: all .2s ease; }
+    .btn-g { background: #238636; color: #fff; }
+    .btn-o { background: transparent; color: var(--txt2); border-color: var(--border); }
+    .btn-o:hover, .btn-g:hover { opacity: .92; }
+    .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; margin-bottom: 18px; }
+    .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 18px; }
+    .card-title { font-size: 13px; color: var(--txt2); margin-bottom: 12px; text-transform: uppercase; letter-spacing: .08em; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; }
+    th { color: var(--txt2); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; font-size: 12px; }
+    tr:hover td { background: rgba(63,185,80,.08); }
+    .status-pill { padding: 4px 10px; border-radius: 999px; font-size: 11px; display: inline-flex; align-items: center; }
+    .status-pill.active { background: rgba(63,185,80,.14); color: var(--green); }
+    .form-group { margin-bottom: 12px; }
+    label { display: block; margin-bottom: 6px; color: var(--txt2); font-size: 12px; }
+    input, select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg3); color: var(--txt); font-family: var(--font); font-size: 13px; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .notice { margin-bottom: 14px; color: var(--txt2); font-size: 13px; }
+    @media(max-width:1000px){ .grid { grid-template-columns: 1fr; } }
+    @media(max-width:720px){ .form-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div>
+        <h1>HR / Payroll</h1>
+        <p id="subtitle" style="color: var(--txt2); margin-top: 6px;">ຈັດການຂໍ້ມູນພະນັກງານ</p>
+      </div>
+      <div class="actions">
+        <button class="btn btn-o" onclick="location.href='/index.html'">Dashboard</button>
+        <button class="btn btn-o" id="btnRefresh">ອັບເດດ</button>
+        <button class="btn btn-g" id="btnLogout">ອອກລະບົບ</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-title">ພະນັກງານທັງໝົດ</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>ຊື່</th>
+                <th>ຕຳແໜ່ງ</th>
+                <th>ພະແນກ</th>
+                <th>ເງິນເດືອນ</th>
+              </tr>
+            </thead>
+            <tbody id="employeeBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">ເພີ່ມພະນັກງານໃໝ່</div>
+        <p class="notice">ຜູ້ໃຊ້ທີ່ມີສິດທິ admin ຫຼື accountant ສາມາດເພີ່ມຂໍ້ມູນໄດ້</p>
+        <form id="employeeForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>ຊື່</label>
+              <input type="text" id="firstName" required />
+            </div>
+            <div class="form-group">
+              <label>ນາມສະກຸນ</label>
+              <input type="text" id="lastName" required />
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>ຕຳແໜ່ງ</label>
+              <input type="text" id="position" />
+            </div>
+            <div class="form-group">
+              <label>ພະແນກ</label>
+              <input type="text" id="department" />
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>ເງິນເດືອນ</label>
+              <input type="number" id="salary" min="0" step="1000" />
+            </div>
+            <div class="form-group">
+              <label>ວັນຈ່າຍງານ</label>
+              <input type="date" id="hireDate" />
+            </div>
+          </div>
+          <button class="btn btn-g" type="submit">ບັນທຶກ</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { Auth, Employees } from './js/api.js';
+
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    const token = localStorage.getItem('authToken');
+
+    const elements = {
+      subtitle: document.getElementById('subtitle'),
+      employeeBody: document.getElementById('employeeBody')
+    };
+
+    const formatMoney = (value) => new Intl.NumberFormat('lo-LA').format(value || 0) + ' ₭';
+
+    const logout = () => {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('currentUser');
+      window.location.href = '/login.html';
+    };
+
+    const showError = (message) => alert(message || 'ກະລຸນາລອງໃໝ່');
+
+    const loadEmployees = async () => {
+      if (!token || !currentUser) {
+        return logout();
+      }
+
+      try {
+        const user = await Auth.getCurrentUser();
+        elements.subtitle.textContent = `${user.fullName} · ${user.role}`;
+
+        const employees = await Employees.getAll();
+        if (!employees.length) {
+          elements.employeeBody.innerHTML = `<tr><td colspan="5" class="empty">ບໍ່ພົບຂໍ້ມູນພະນັກງານ</td></tr>`;
+          return;
+        }
+
+        elements.employeeBody.innerHTML = employees.map((employee, idx) => {
+          return `
+            <tr>
+              <td>${idx + 1}</td>
+              <td>${employee.firstName || '-'} ${employee.lastName || ''}</td>
+              <td>${employee.position || '-'}</td>
+              <td>${employee.department || '-'}</td>
+              <td>${formatMoney(employee.salary)}</td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error(err);
+        showError('ບໍ່ສາມາດໂຫລດຂໍ້ມູນໄດ້');
+      }
+    };
+
+    document.getElementById('btnLogout').addEventListener('click', logout);
+    document.getElementById('btnRefresh').addEventListener('click', loadEmployees);
+
+    document.getElementById('employeeForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const payload = {
+        firstName: document.getElementById('firstName').value.trim(),
+        lastName: document.getElementById('lastName').value.trim(),
+        position: document.getElementById('position').value.trim(),
+        department: document.getElementById('department').value.trim(),
+        salary: Number(document.getElementById('salary').value) || 0,
+        hireDate: document.getElementById('hireDate').value || new Date().toISOString().split('T')[0]
+      };
+
+      try {
+        await Employees.create(payload);
+        document.getElementById('employeeForm').reset();
+        loadEmployees();
+      } catch (err) {
+        console.error(err);
+        showError('ບໍ່ສາມາດເພີ່ມພະນັກງານໄດ້');
+      }
+    });
+
+    loadEmployees();
+  </script>
+</body>
+</html>

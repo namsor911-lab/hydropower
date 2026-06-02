@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ພາຍໃນລະບົບ — Namsor Hydropower</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0d1117;
+      --bg2: #161b22;
+      --bg3: #1c2128;
+      --border: #30363d;
+      --txt: #e6edf3;
+      --txt2: #8b949e;
+      --txt3: #484f58;
+      --green: #3fb950;
+      --blue: #58a6ff;
+      --red: #f85149;
+      --yellow: #d29922;
+      --r: 10px;
+      --font: 'IBM Plex Sans Thai', sans-serif;
+      --mono: 'IBM Plex Mono', monospace;
+    }
+    body { font-family: var(--font); background: var(--bg); color: var(--txt); min-height: 100vh; }
+    .page { max-width: 1320px; margin: 0 auto; padding: 18px; }
+    .topbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; margin-bottom: 18px; }
+    .topbar h1 { font-size: 20px; font-weight: 700; }
+    .topbar .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; border-radius: 999px; font-weight: 600; font-size: 13px; cursor: pointer; border: 1px solid transparent; transition: all .2s ease; }
+    .btn-g { background: #238636; color: #fff; }
+    .btn-o { background: transparent; color: var(--txt2); border-color: var(--border); }
+    .btn-o:hover, .btn-g:hover { opacity: .92; }
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 14px; margin-bottom: 18px; }
+    .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 18px; }
+    .card-title { font-size: 13px; color: var(--txt2); margin-bottom: 12px; text-transform: uppercase; letter-spacing: .08em; }
+    .card-value { font-size: 26px; font-weight: 700; font-family: var(--mono); }
+    .card-value.g { color: var(--green); }
+    .card-value.r { color: var(--red); }
+    .card-value.b { color: var(--blue); }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; }
+    th { color: var(--txt2); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; font-size: 12px; }
+    tr:hover td { background: rgba(63,185,80,.08); }
+    .empty { padding: 48px 0; text-align: center; color: var(--txt3); }
+    .status-pill { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; background: rgba(35,134,54,.14); color: var(--green); font-size: 11px; }
+    .status-pill.exp { background: rgba(248,81,73,.14); color: var(--red); }
+    .panel { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+    .panel h2 { margin-bottom: 10px; font-size: 16px; }
+    .panel p { color: var(--txt2); line-height: 1.6; }
+    .banner { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .badge { padding: 6px 10px; background: rgba(88,166,255,.12); color: var(--blue); border-radius: 999px; font-size: 12px; }
+    @media(max-width:900px){ .panel { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div>
+        <div class="banner"><span class="badge">Namsor</span><span>Hydropower Accounting</span></div>
+        <h1>ແຜນງານລາຍຮັບ-ລາຍຈ່າຍ</h1>
+        <p id="subtitle" style="color: var(--txt2); margin-top: 6px;">ກວດສອບສະຖານະເງິນໃນເດືອນນີ້</p>
+      </div>
+      <div class="actions">
+        <button class="btn btn-o" onclick="location.href='/hr.html'">HR / Payroll</button>
+        <button class="btn btn-o" id="btnRefresh">ອັບເດດ</button>
+        <button class="btn btn-g" id="btnLogout">ອອກລະບົບ</button>
+      </div>
+    </div>
+
+    <div class="summary-grid">
+      <div class="card">
+        <div class="card-title">ລາຍຮັບລວມ</div>
+        <div class="card-value g" id="totalIncome">0 ₭</div>
+      </div>
+      <div class="card">
+        <div class="card-title">ລາຍຈ່າຍລວມ</div>
+        <div class="card-value r" id="totalExpense">0 ₭</div>
+      </div>
+      <div class="card">
+        <div class="card-title">ຜົນກໍາໄລ</div>
+        <div class="card-value b" id="netBalance">0 ₭</div>
+      </div>
+      <div class="card">
+        <div class="card-title">ເລກທຸລະກຳ</div>
+        <div class="card-value" id="transactionCount">0</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">ທຸລະກຳລ່າສຸດ</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>ວັນທີ</th>
+              <th>ປະເພດ</th>
+              <th>ໝາຍເຫດ</th>
+              <th>ຈຳນວນ</th>
+            </tr>
+          </thead>
+          <tbody id="transactionBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="card">
+        <h2>ພະນັກງານທີ່ເຂົ້າລະບົບ</h2>
+        <p id="userInfo">Loading...</p>
+      </div>
+      <div class="card">
+        <h2>ຄໍາແນະນໍາ</h2>
+        <p>ເຂົ້າລະບົບດ້ວຍບັນຊີຂອງທ່ານເພື່ອເຄືອນໄຫວໃນລະບົບ API ຂອງພວກເຮົາ.</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { Auth, Transactions } from './js/api.js';
+
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+    const token = localStorage.getItem('authToken');
+
+    const elements = {
+      totalIncome: document.getElementById('totalIncome'),
+      totalExpense: document.getElementById('totalExpense'),
+      netBalance: document.getElementById('netBalance'),
+      transactionCount: document.getElementById('transactionCount'),
+      transactionBody: document.getElementById('transactionBody'),
+      userInfo: document.getElementById('userInfo'),
+      subtitle: document.getElementById('subtitle')
+    };
+
+    const formatMoney = (value) => new Intl.NumberFormat('lo-LA').format(value || 0) + ' ₭';
+    const formatDate = (value) => new Date(value).toLocaleDateString('lo-LA', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+    const logout = () => {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('currentUser');
+      window.location.href = '/login.html';
+    };
+
+    const showError = (message) => {
+      alert(message || 'ກະລຸນາລອງໃໝ່');
+    };
+
+    const loadDashboard = async () => {
+      if (!token || !currentUser) {
+        return logout();
+      }
+
+      elements.userInfo.textContent = `${currentUser.fullName} · ${currentUser.role}`;
+      const now = new Date();
+      const month = now.getMonth() + 1;
+      const year = now.getFullYear();
+      elements.subtitle.textContent = `ຂໍ້ມູນປະຈຸບັນ: ${formatDate(now)}`;
+
+      try {
+        const summary = await Transactions.getSummary(month, year);
+        const transactions = await Transactions.getAll({ startDate: `${year}-${String(month).padStart(2,'0')}-01`, endDate: `${year}-${String(month).padStart(2,'0')}-${new Date(year, month, 0).getDate()}` });
+
+        elements.totalIncome.textContent = formatMoney(summary.totalIncome);
+        elements.totalExpense.textContent = formatMoney(summary.totalExpense);
+        elements.netBalance.textContent = formatMoney((summary.totalIncome || 0) - (summary.totalExpense || 0));
+        elements.transactionCount.textContent = transactions.length;
+
+        if (!transactions.length) {
+          elements.transactionBody.innerHTML = `<tr><td colspan="5" class="empty">ບໍ່ພົບທຸລະກຳ ໃນເດືອນນີ້</td></tr>`;
+          return;
+        }
+
+        elements.transactionBody.innerHTML = transactions.slice(0, 8).map((tx, index) => {
+          return `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${formatDate(tx.date)}</td>
+              <td class="${tx.type === 'income' ? 'status-pill' : 'status-pill exp'}">${tx.type}</td>
+              <td>${tx.description || '-'}</td>
+              <td>${formatMoney(tx.amount)}</td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error(err);
+        showError('ບໍ່ສາມາດໂຫລດຂໍ້ມູນໄດ້');
+      }
+    };
+
+    document.getElementById('btnLogout').addEventListener('click', logout);
+    document.getElementById('btnRefresh').addEventListener('click', loadDashboard);
+
+    loadDashboard();
+  </script>
+</body>
+</html>

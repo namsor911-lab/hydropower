@@ -1,5 +1,6 @@
 import sqlite3 from 'sqlite3';
 import { promisify } from 'util';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -9,6 +10,10 @@ const DB_PATH = path.join(__dirname, '..', 'database', 'namsor.db');
 let db;
 
 export const initDatabase = async () => {
+  if (!fs.existsSync(path.dirname(DB_PATH))) {
+    fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
+  }
+
   return new Promise((resolve, reject) => {
     db = new sqlite3.Database(DB_PATH, (err) => {
       if (err) reject(err);

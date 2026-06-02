@@ -11,7 +11,7 @@ RUN apk add --no-cache python3 make g++
 
 # Copy package files
 COPY backend/package*.json ./backend/
-COPY frontend/package.json ./frontend/ 2>/dev/null || true
+COPY frontend/package.json ./frontend/
 
 # Install backend dependencies
 WORKDIR /app/backend
@@ -19,12 +19,13 @@ RUN npm ci --production
 
 # Copy backend source
 COPY backend/src ./src
-COPY backend/.env.example ./.env || true
+COPY backend/.env.example .env
 
 # Copy frontend static files
 COPY frontend/*.html ../frontend/
 COPY frontend/js ../frontend/js
-COPY frontend/css ../frontend/css 2>/dev/null || true
+COPY frontend/css ../frontend/css
+COPY frontend/assets ../frontend/assets
 
 # Expose port
 EXPOSE 5000
