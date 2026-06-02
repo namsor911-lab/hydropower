@@ -1,0 +1,40 @@
+{
+  "name": "namsor-accounting-api",
+  "version": "1.0.0",
+  "description": "Backend API for Namsor Hydropower Accounting System",
+  "regions": ["sin"],
+  "env": {
+    "NODE_ENV": {
+      "value": "production"
+    },
+    "DATABASE_URL": {
+      "value": "/tmp/namsor.db"
+    },
+    "JWT_SECRET": {
+      "description": "JWT secret key for token signing"
+    },
+    "CORS_ORIGIN": {
+      "value": "https://namsor-frontend.com"
+    }
+  },
+  "builds": [
+    {
+      "src": "src/server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/health",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/uploads/(.*)",
+      "dest": "src/server.js"
+    }
+  ]
+}

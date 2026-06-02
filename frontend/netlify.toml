@@ -1,0 +1,14 @@
+name: namsor-accounting
+plan: starter
+
+[build]
+build-dir = "./"
+command = "echo 'No build needed'"
+
+[env]
+API_BASE_URL = "https://api.namsor-accounting.netlify.app"
+
+[[redirects]]
+from = "/*"
+to = "/frontend/index.html"
+status = 200

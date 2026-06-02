@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ເຂົ້າລະບົບ — ເຂື່ອນໄຟຟ້ານ້ຳຊໍ້</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0d1117;
+      --bg2: #161b22;
+      --bg3: #1c2128;
+      --border: #30363d;
+      --txt: #e6edf3;
+      --txt2: #8b949e;
+      --txt3: #484f58;
+      --green: #3fb950;
+      --red: #f85149;
+      --blue: #58a6ff;
+      --r: 6px;
+      --font: 'IBM Plex Sans Thai', sans-serif;
+      --mono: 'IBM Plex Mono', monospace;
+    }
+    
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--txt);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-container {
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .login-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .logo {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #238636, #3fb950);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin: 0 auto 16px;
+    }
+
+    .login-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .login-subtitle {
+      font-size: 13px;
+      color: var(--txt2);
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--txt2);
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      color: var(--txt);
+      font-family: var(--font);
+      font-size: 14px;
+      transition: all 0.15s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+    }
+
+    .form-input::placeholder {
+      color: var(--txt3);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 10px 16px;
+      background: linear-gradient(135deg, #238636, #3fb950);
+      color: white;
+      border: none;
+      border-radius: var(--r);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: var(--font);
+      margin-bottom: 12px;
+    }
+
+    .login-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(63, 185, 80, 0.3);
+    }
+
+    .login-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .signup-link {
+      text-align: center;
+      font-size: 13px;
+      color: var(--txt2);
+    }
+
+    .signup-link a {
+      color: var(--blue);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .signup-link a:hover {
+      color: #79c0ff;
+    }
+
+    .error-message {
+      background: rgba(248, 81, 73, 0.12);
+      color: var(--red);
+      padding: 10px 12px;
+      border-radius: var(--r);
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: pulse 1.5s infinite;
+      margin-left: 4px;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+    }
+
+    .info-text {
+      font-size: 12px;
+      color: var(--txt3);
+      text-align: center;
+      margin-top: 16px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="logo">⚡</div>
+        <div class="login-title">ເຂົ້າລະບົບ</div>
+        <div class="login-subtitle">ເຂື່ອນໄຟຟ້ານ້ຳຊໍ້ v3.1</div>
+      </div>
+
+      <div class="error-message" id="errorMessage"></div>
+
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">📧 ອີເມວ</label>
+          <input 
+            type="email" 
+            id="emailInput" 
+            class="form-input" 
+            placeholder="your@email.com" 
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🔒 ລະຫັດຜ່ານ</label>
+          <input 
+            type="password" 
+            id="passwordInput" 
+            class="form-input" 
+            placeholder="••••••••" 
+            required
+          />
+        </div>
+
+        <button type="submit" class="login-btn" id="loginBtn">
+          ເຂົ້າລະບົບ
+        </button>
+      </form>
+
+      <div class="divider"></div>
+
+      <div class="signup-link">
+        ບໍ່ມີບັນຊີ? <a href="#" onclick="alert('ກະລຸນາຕິດຕໍ່ຜູ້ບໍລິຫານເພື່ອສະໝັກສະມາຊິກ')">ສະໝັກສະມາຊິກ</a>
+      </div>
+
+      <div class="info-text">
+        💡 ໃຊ້ອີເມວ ແລະ ລະຫັດຜ່ານຂອງທ່ານເພື່ອເຂົ້າລະບົບ<br>
+        ກະລຸນາຕິດຕໍ່ຜູ້ບໍລິຫານຖ້າທ່ານລືມລະຫັດຜ່ານ
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { Auth, setAuthToken } from './js/api.js';
+
+    window.handleLogin = async (event) => {
+      event.preventDefault();
+
+      const email = document.getElementById('emailInput').value.trim();
+      const password = document.getElementById('passwordInput').value;
+      const errorMsg = document.getElementById('errorMessage');
+      const loginBtn = document.getElementById('loginBtn');
+
+      errorMsg.classList.remove('show');
+
+      if (!email || !password) {
+        errorMsg.textContent = '⚠️ ກະລຸນາປ້ອນອີເມວ ແລະ ລະຫັດຜ່ານ';
+        errorMsg.classList.add('show');
+        return;
+      }
+
+      try {
+        loginBtn.disabled = true;
+        loginBtn.textContent = 'ກຳລັງໂຫລດ...';
+
+        const response = await Auth.login(email, password);
+        
+        if (response && response.token) {
+          setAuthToken(response.token);
+          localStorage.setItem('currentUser', JSON.stringify(response.user));
+          
+          // Redirect to dashboard
+          setTimeout(() => {
+            window.location.href = '/frontend/index.html';
+          }, 500);
+        } else {
+          throw new Error('Invalid response from server');
+        }
+      } catch (err) {
+        console.error('Login error:', err);
+        errorMsg.textContent = '❌ ' + (err.message || 'ເຂົ້າລະບົບບໍ່ສຳເລັດ');
+        errorMsg.classList.add('show');
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'ເຂົ້າລະບົບ';
+      }
+    };
+
+    // Check if already logged in
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      window.location.href = '/frontend/index.html';
+    }
+  </script>
+</body>
+</html>

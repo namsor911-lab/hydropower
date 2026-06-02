@@ -1,0 +1,2075 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ບັນຊີລາຍຮັບ-ລາຍຈ່າຍ — ເຂື່ອນໄຟຟ້ານ້ຳຊໍ້</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0d1117; --bg2: #161b22; --bg3: #1c2128; --bg4: #21262d;
+  --border: #30363d; --border2: #21262d;
+  --txt: #e6edf3; --txt2: #8b949e; --txt3: #484f58;
+  --green: #3fb950; --green-dim: rgba(63,185,80,0.12);
+  --red: #f85149; --red-dim: rgba(248,81,73,0.12);
+  --blue: #58a6ff; --blue-dim: rgba(88,166,255,0.12);
+  --yellow: #d29922; --yellow-dim: rgba(210,153,34,0.12);
+  --purple: #bc8cff; --purple-dim: rgba(188,140,255,0.12);
+  --orange: #e3b341; --orange-dim: rgba(227,179,65,0.12);
+  --accent: #238636;
+  --r: 6px; --r2: 10px;
+  --font: 'IBM Plex Sans Thai', sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+body { font-family: var(--font); background: var(--bg); color: var(--txt); min-height: 100vh; overflow-x: hidden; font-size: 14px; }
+.app { display: flex; min-height: 100vh; }
+.sidebar { width: 240px; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; transition: transform 0.2s ease; }
+.sidebar.collapsed { transform: translateX(-240px); }
+.main { flex: 1; margin-left: 240px; min-height: 100vh; transition: margin 0.2s ease; }
+.main.expanded { margin-left: 0; }
+.logo { border-bottom: 1px solid var(--border); overflow: hidden; line-height: 0; }
+.logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg,#238636,#3fb950); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.logo-name { font-size: 15px; font-weight: 700; }
+.logo-name span { color: var(--green); }
+.logo-sub { font-size: 10px; color: var(--txt3); margin-top: 1px; }
+.nav { flex: 1; padding: 8px; overflow-y: auto; }
+.nav-sec-label { font-size: 10px; font-weight: 600; color: var(--txt3); text-transform: uppercase; letter-spacing: 0.8px; padding: 8px 12px 4px; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: var(--r); color: var(--txt2); cursor: pointer; transition: all 0.15s; margin-bottom: 2px; font-size: 13px; font-weight: 500; }
+.nav-item:hover { background: var(--bg3); color: var(--txt); }
+.nav-item.active { background: var(--green-dim); color: var(--green); }
+.nav-item-main { font-size: 15px !important; font-weight: 700 !important; }
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+.sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--txt3); }
+.ver { display: flex; align-items: center; gap: 6px; }
+.ver-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.header { height: 56px; background: var(--bg2); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; position: sticky; top: 0; z-index: 50; gap: 12px; }
+.menu-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: none; background: transparent; color: var(--txt2); cursor: pointer; border-radius: var(--r); transition: all 0.15s; }
+.menu-btn:hover { background: var(--bg3); color: var(--txt); }
+.header-title { font-size: 14px; font-weight: 600; }
+.spacer { flex: 1; }
+.header-date { font-size: 12px; color: var(--txt3); font-family: var(--mono); }
+.content { padding: 20px; }
+.page { display: none; animation: fadeUp 0.25s ease; }
+.page.active { display: block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.pg-head { margin-bottom: 20px; }
+.pg-title { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
+.pg-sub { font-size: 13px; color: var(--txt2); margin-top: 4px; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 12px; margin-bottom: 20px; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 16px; }
+.stat-lbl { font-size: 12px; color: var(--txt2); margin-bottom: 8px; }
+.stat-val { font-size: 22px; font-weight: 700; font-family: var(--mono); letter-spacing: -1px; }
+.stat-val.g { color: var(--green); }
+.stat-val.r { color: var(--red); }
+.stat-val.b { color: var(--blue); }
+.stat-val.y { color: var(--yellow); }
+.stat-hint { font-size: 11px; color: var(--txt3); margin-top: 4px; }
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); margin-bottom: 16px; overflow: hidden; }
+.card-head { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card-title { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.card-body { padding: 16px; }
+.tw { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 600; color: var(--txt2); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); white-space: nowrap; background: var(--bg3); }
+td { padding: 10px 12px; font-size: 13px; border-bottom: 1px solid var(--border2); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg3); }
+.tfoot-row td { background: var(--bg3); font-weight: 600; border-top: 1px solid var(--border); border-bottom: none; }
+
+/* ===== EXCEL-STYLE PURCHASE TABLE ===== */
+.excel-table-wrap { overflow-x: auto; border-radius: 0 0 var(--r2) var(--r2); }
+.excel-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.excel-table thead tr { background: linear-gradient(135deg, #1d6a2e 0%, #238636 50%, #2ea043 100%); }
+.excel-table thead th {
+  padding: 11px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  border-right: 1px solid rgba(255,255,255,0.15);
+  border-bottom: 2px solid #1a5c27;
+  white-space: nowrap;
+  position: relative;
+}
+.excel-table thead th:last-child { border-right: none; }
+.excel-table thead th::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: rgba(255,255,255,0.2);
+}
+.excel-table tbody tr { transition: background 0.1s; }
+.excel-table tbody tr:nth-child(even) { background: rgba(255,255,255,0.022); }
+.excel-table tbody tr:hover td { background: rgba(63,185,80,0.08) !important; }
+.excel-table tbody td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border2);
+  border-right: 1px solid rgba(255,255,255,0.04);
+  vertical-align: middle;
+}
+.excel-table tbody td:last-child { border-right: none; }
+.excel-table tbody tr:last-child td { border-bottom: none; }
+.excel-table .col-no { color: var(--txt3); text-align: center; font-family: var(--mono); font-size: 12px; width: 46px; }
+.excel-table .col-date { font-family: var(--mono); font-size: 12px; color: var(--txt2); }
+.excel-table .col-name { font-weight: 500; }
+.excel-table .col-qty { text-align: right; font-family: var(--mono); }
+.excel-table .col-price { text-align: right; font-family: var(--mono); color: var(--txt2); }
+.excel-table .col-total { text-align: right; font-family: var(--mono); font-weight: 700; color: var(--green); }
+.excel-table .col-unit { text-align: center; }
+.excel-table .col-note { color: var(--txt3); font-size: 12px; }
+.excel-table .col-action { text-align: center; width: 60px; }
+.excel-tfoot tr {
+  background: linear-gradient(90deg, rgba(35,134,54,0.18) 0%, rgba(35,134,54,0.1) 100%);
+  border-top: 2px solid var(--green);
+}
+.excel-tfoot td {
+  padding: 11px 14px;
+  font-weight: 700;
+  font-size: 13px;
+  border-right: 1px solid rgba(255,255,255,0.04);
+}
+.excel-tfoot td:last-child { border-right: none; }
+.excel-total-label { text-align: right; color: var(--txt2); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+.excel-total-value { text-align: right; font-family: var(--mono); font-size: 15px; color: var(--green); letter-spacing: -0.5px; }
+.excel-unit-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--blue-dim);
+  color: var(--blue);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.excel-row-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px; height: 22px;
+  border-radius: 4px;
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--txt3);
+}
+.num { font-family: var(--mono); font-size: 13px; }
+.num.inc { color: var(--green); }
+.num.exp { color: var(--red); }
+.num.pos { color: var(--green); font-weight: 700; }
+.num.neg { color: var(--red); font-weight: 700; }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: var(--r); font-size: 13px; font-weight: 500; border: 1px solid transparent; cursor: pointer; transition: all 0.15s; font-family: var(--font); white-space: nowrap; }
+.btn-g { background: var(--accent); color: white; border-color: #2ea043; }
+.btn-g:hover { background: #2ea043; }
+.btn-o { background: transparent; color: var(--txt2); border-color: var(--border); }
+.btn-o:hover { color: var(--txt); border-color: var(--txt3); background: var(--bg3); }
+.btn-r { background: var(--red-dim); color: var(--red); }
+.btn-r:hover { background: rgba(248,81,73,0.2); }
+.btn-b { background: #1f6feb; color: white; border-color: #388bfd; }
+.btn-b:hover { background: #388bfd; }
+.btn-y { background: var(--yellow-dim); color: var(--yellow); border-color: transparent; }
+.btn-y:hover { background: rgba(210,153,34,0.22); }
+.btn-sm { padding: 4px 8px; font-size: 11px; }
+.btn svg { width: 14px; height: 14px; }
+.fbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 16px 0; }
+select.sel, input.inp { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r); padding: 6px 26px 6px 10px; color: var(--txt); font-family: var(--font); font-size: 13px; appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; }
+select.sel:focus, input.inp:focus { outline: none; border-color: var(--blue); }
+.srch { display: flex; align-items: center; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r); padding: 0 10px; gap: 6px; flex: 1; max-width: 260px; }
+.srch:focus-within { border-color: var(--blue); }
+.srch svg { width: 14px; height: 14px; color: var(--txt3); flex-shrink: 0; }
+.srch input { background: none; border: none; color: var(--txt); font-family: var(--font); font-size: 13px; padding: 6px 0; outline: none; width: 100%; }
+.srch input::placeholder { color: var(--txt3); }
+.doc-hdr { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r2); padding: 16px 20px; margin-bottom: 16px; text-align: center; }
+.doc-country { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+.doc-slogan { font-size: 12px; color: var(--txt2); margin-bottom: 12px; }
+.doc-tl { border-top: 1px solid var(--border); padding-top: 12px; }
+.doc-title { font-size: 17px; font-weight: 700; }
+.doc-org { font-size: 12px; color: var(--txt2); margin-top: 4px; }
+.doc-meta { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 10px; font-size: 12px; color: var(--txt3); }
+.q-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 12px; margin-bottom: 20px; }
+.q-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 16px; }
+.q-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.q-card-title { font-size: 13px; font-weight: 600; }
+.q-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 12px; }
+.q-row-lbl { color: var(--txt2); }
+.q-row-val { font-family: var(--mono); font-weight: 600; }
+.q-div { height: 1px; background: var(--border); margin: 8px 0; }
+.q-net { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; }
+.qb { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.q1 { background: var(--blue-dim); color: var(--blue); }
+.q2 { background: var(--green-dim); color: var(--green); }
+.q3 { background: var(--yellow-dim); color: var(--yellow); }
+.q4 { background: var(--purple-dim); color: var(--purple); }
+.sig-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 16px; margin-top: 4px; }
+.sig-box { text-align: center; }
+.sig-lbl { font-size: 12px; color: var(--txt2); margin-bottom: 8px; font-weight: 500; }
+.sig-canvas-wrap { position: relative; border: 1px dashed var(--border); border-radius: var(--r); background: var(--bg3); height: 80px; cursor: crosshair; overflow: hidden; }
+.sig-canvas-wrap.signed { border-color: var(--green); border-style: solid; background: #ffffff; }
+.sig-canvas-wrap canvas { width: 100%; height: 100%; display: block; }
+.sig-actions { display: flex; gap: 6px; margin-top: 6px; justify-content: center; }
+.sig-btn { font-size: 11px; padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg3); color: var(--txt2); cursor: pointer; font-family: var(--font); transition: all 0.15s; }
+.sig-btn:hover { color: var(--txt); border-color: var(--txt3); }
+.sig-btn.approve { background: var(--green-dim); color: var(--green); border-color: var(--green); }
+.sig-btn.approve:hover { background: rgba(63,185,80,0.22); }
+.sig-btn.clear-s { background: var(--red-dim); color: var(--red); border-color: transparent; }
+.sig-box { text-align: center; }
+.sig-lbl { font-size: 12px; color: var(--txt2); margin-bottom: 36px; }
+.sig-line { height: 1px; background: var(--border); margin-bottom: 6px; }
+.sig-name { font-size: 11px; color: var(--txt3); }
+.modal-ov { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; align-items: center; justify-content: center; }
+.modal-ov.active { display: flex; }
+.modal { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); width: 90%; max-width: 460px; animation: mIn 0.2s ease; display: flex; flex-direction: column; max-height: 90vh; }
+@keyframes mIn { from{opacity:0;transform:scale(0.96) translateY(-8px)} to{opacity:1;transform:scale(1) translateY(0)} }
+.modal-head { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.modal-head h3 { font-size: 14px; font-weight: 600; }
+.modal-close { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border: none; background: var(--bg3); border-radius: var(--r); color: var(--txt2); cursor: pointer; }
+.modal-close:hover { color: var(--txt); }
+.modal-body { padding: 16px; overflow-y: auto; flex: 1; }
+.fg { margin-bottom: 14px; }
+.fl { display: block; font-size: 12px; color: var(--txt2); margin-bottom: 6px; font-weight: 500; }
+.fc { width: 100%; padding: 8px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r); color: var(--txt); font-family: var(--font); font-size: 13px; }
+.fc:focus { outline: none; border-color: var(--blue); }
+.form-actions { display: flex; gap: 10px; margin-top: 20px; }
+.form-actions .btn { flex: 1; justify-content: center; }
+.modal-footer { padding: 12px 16px; border-top: 1px solid var(--border); flex-shrink: 0; display: flex; gap: 10px; background: var(--bg2); border-radius: 0 0 var(--r2) var(--r2); }
+.modal-footer .btn { flex: 1; justify-content: center; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.tag-i { background: var(--green-dim); color: var(--green); }
+.tag-e { background: var(--red-dim); color: var(--red); }
+.dash-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+@media(max-width:900px){ .dash-grid { grid-template-columns: 1fr; } }
+.act-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border2); }
+.act-item:last-child { border-bottom: none; }
+.act-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.act-desc { flex: 1; font-size: 13px; }
+.act-sub { font-size: 11px; color: var(--txt3); margin-top: 2px; }
+.act-amt { font-family: var(--mono); font-size: 13px; font-weight: 600; }
+.empty { text-align: center; padding: 36px 20px; color: var(--txt3); }
+.empty svg { width: 36px; height: 36px; margin: 0 auto 10px; display: block; opacity: 0.3; }
+.empty p { font-size: 13px; line-height: 1.6; }
+.pl { display: flex; justify-content: space-between; font-size: 12px; color: var(--txt2); margin-bottom: 4px; }
+.pb { height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; margin-bottom: 12px; }
+.pb-fill { height: 100%; border-radius: 3px; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.nav-item-soon { opacity: 0.55; cursor: default; }
+.nav-item-soon:hover { background: var(--bg3); color: var(--txt2); opacity: 0.7; }
+.soon-badge { margin-left: auto; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 10px; background: var(--yellow-dim); color: var(--yellow); letter-spacing: 0.3px; white-space: nowrap; }
+.sig-name-input { width: 100%; margin-top: 6px; background: transparent; border: none; border-bottom: 1px solid var(--border); color: var(--txt); font-family: var(--font); font-size: 12px; padding: 4px 0; text-align: center; outline: none; }
+.sig-name-input::placeholder { color: var(--txt3); }
+.sig-name-input:focus { border-color: var(--blue); }
+.sig-approved-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; color: var(--green); margin-top: 4px; }
+
+/* ===== BAR CHART ===== */
+.chart-wrap { padding: 16px; overflow-x: auto; }
+.bar-chart { display: flex; align-items: flex-end; gap: 4px; height: 160px; min-width: 480px; }
+.bar-group { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; min-width: 28px; }
+.bar-pair { display: flex; gap: 2px; align-items: flex-end; width: 100%; }
+.bar-inc { background: var(--green); border-radius: 3px 3px 0 0; min-height: 2px; transition: height 0.4s ease; cursor: default; }
+.bar-exp { background: var(--red); border-radius: 3px 3px 0 0; min-height: 2px; transition: height 0.4s ease; cursor: default; }
+.bar-lbl { font-size: 9px; color: var(--txt3); text-align: center; white-space: nowrap; }
+.chart-legend { display: flex; gap: 16px; justify-content: flex-end; padding: 8px 16px 0; font-size: 11px; color: var(--txt2); }
+.legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; display: inline-block; margin-right: 4px; vertical-align: middle; }
+
+/* ===== TOAST ===== */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg3); border: 1px solid var(--border); color: var(--txt); padding: 10px 20px; border-radius: 8px; font-size: 13px; z-index: 999; box-shadow: 0 4px 20px rgba(0,0,0,0.5); pointer-events: none; opacity: 0; transition: opacity 0.2s; }
+.toast.show { opacity: 1; }
+
+
+/* ===== RECEIPT / BILL IMAGE ===== */
+.receipt-upload-area {
+  border: 2px dashed var(--border);
+  border-radius: var(--r);
+  padding: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--bg3);
+  position: relative;
+}
+.receipt-upload-area:hover { border-color: var(--green); background: var(--green-dim); }
+.receipt-upload-area input[type=file] { position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%; }
+.receipt-upload-icon { font-size: 22px; margin-bottom: 4px; }
+.receipt-upload-txt { font-size: 12px; color: var(--txt3); }
+.receipt-preview-wrap { position: relative; margin-top: 10px; display: none; }
+.receipt-preview-wrap.has-img { display: block; }
+.receipt-preview-img { width: 100%; max-height: 140px; object-fit: contain; border-radius: var(--r); border: 1px solid var(--border); background: #fff; }
+.receipt-preview-remove { position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;line-height:1; }
+.receipt-preview-remove:hover { background: var(--red); }
+.receipt-thumb { width: 36px; height: 36px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border); cursor: pointer; vertical-align: middle; background: #fff; }
+.receipt-modal-img { width:100%;max-height:80vh;object-fit:contain;border-radius:var(--r); }
+
+/* ===== PRINT ===== */
+@media print {
+  .sidebar,.header,.fbar,.card-head .btn,.btn-sm,.form-actions,.btn { display: none !important; }
+  .main { margin-left: 0; }
+  .content { padding: 0; }
+  body { background: #fff; color: #000; }
+  .card { border: 1px solid #ccc; border-radius: 4px; break-inside: avoid; }
+  .card-head { border-bottom: 1px solid #ccc; }
+  .doc-hdr { background: #f5f5f5; border: 1px solid #ccc; }
+  .doc-country,.doc-title { color: #000; }
+  .doc-slogan,.doc-org,.doc-meta { color: #555; }
+  .stat-card { border: 1px solid #ccc; }
+  th { background: #f5f5f5; color: #555; }
+  td { color: #000; }
+  .num.inc { color: #1a7f37; }
+  .num.exp { color: #cf222e; }
+  .num.pos { color: #1a7f37; }
+  .num.neg { color: #cf222e; }
+  .tfoot-row td { background: #f5f5f5; }
+  .sig-canvas-wrap { border: 1px solid #ccc; }
+  .print-hide { display: none !important; }
+}
+
+@media (max-width:768px) {
+  .sidebar { width: 220px; }
+  .sidebar.collapsed { transform: translateX(-220px); }
+  .main { margin-left: 0; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .dash-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <nav class="nav">
+      <div class="nav-sec-label">ໜ້າຫຼັກ</div>
+      <div class="nav-item nav-item-main active" data-page="dashboard" onclick="go('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        ພາບລວມ
+      </div>
+      <div class="nav-item nav-item-main" data-page="budget" onclick="go('budget')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="6" y1="8" x2="6" y2="13"/><line x1="10" y1="10" x2="10" y2="13"/><line x1="14" y1="7" x2="14" y2="13"/><line x1="18" y1="9" x2="18" y2="13"/></svg>
+        ແຜນການຊື້ເຄື່ອງ
+      </div>
+      <div class="nav-item nav-item-main" data-page="purchase" onclick="go('purchase')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        ບັນຊີລາຍການຊື້ເຄື່ອງ
+      </div>
+      <div class="nav-item nav-item-main" data-page="accounting" onclick="go('accounting')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        ບັນຊີລາຍການ
+      </div>
+      <div class="nav-sec-label">ລາຍງານ</div>
+      <div class="nav-item" data-page="quarterly" onclick="go('quarterly')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="6" height="14" rx="1"/><rect x="9" y="7" width="6" height="10" rx="1"/><rect x="16" y="5" width="6" height="12" rx="1"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+        ສະຫຼຸບໄຕຣ໌ມາດ
+      </div>
+      <div class="nav-item" data-page="annual" onclick="go('annual')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        ສະຫຼຸບລາຍປີ
+      </div>
+      <div class="nav-sec-label">ຊັບພະຍາກອນມະນຸດ</div>
+      <div class="nav-item" onclick="window.location.href='hr.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        ລະບົບ HR
+      </div>
+      <div class="nav-sec-label">ການຜະລິດໄຟຟ້າ</div>
+      <div class="nav-item nav-item-soon" onclick="comingSoon('ແຜນການຜະລິດໄຟຟ້າ')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        ແຜນການຜະລິດໄຟຟ້າ <span class="soon-badge">ໄວໆນີ້</span>
+      </div>
+      <div class="nav-item nav-item-soon" onclick="comingSoon('ການຄຳນວນໂຫລດ')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        ການຄຳນວນໂຫລດ/ວັນ <span class="soon-badge">ໄວໆນີ້</span>
+      </div>
+      <div class="nav-sec-label">ລະບົບ</div>
+      <div class="nav-item" data-page="settings" onclick="go('settings')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        ຕັ້ງຄ່າ
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="ver"><div class="ver-dot"></div> ລະບົບທຳງານປົກກະຕິ</div>
+      <div style="margin-top:3px;font-size:10px;">ເຂື່ອນໄຟຟ້ານ້ຳຊໍ້ v3.0</div>
+    </div>
+  </aside>
+
+  <main class="main" id="main">
+    <header class="header">
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <span class="header-title" id="pageTitle">ພາບລວມ</span>
+      <div class="spacer"></div>
+      <span class="header-date" id="hDate"></span>
+    </header>
+    <div class="content">
+
+      <div class="page active" id="page-dashboard">
+        <div class="pg-head">
+          <div class="pg-title">ພາບລວມການເງິນ</div>
+          <div class="pg-sub">ສະຫຼຸບ — <span id="dashMonth"></span></div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-lbl">💰 ລາຍຮັບເດືອນນີ້</div>
+            <div class="stat-val g" id="dashInc">0 ₭</div>
+            <div class="stat-hint" id="dashIncCnt">0 ລາຍການ</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-lbl">💸 ລາຍຈ່າຍເດືອນນີ້</div>
+            <div class="stat-val r" id="dashExp">0 ₭</div>
+            <div class="stat-hint" id="dashExpCnt">0 ລາຍການ</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-lbl">📊 ສຸດທິເດືອນນີ້</div>
+            <div class="stat-val g" id="dashNet">0 ₭</div>
+            <div class="stat-hint" id="dashNetLbl">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-lbl">🏦 ຍອດຄົງເຫຼືອທັງໝົດ</div>
+            <div class="stat-val b" id="dashAll">0 ₭</div>
+            <div class="stat-hint">ທຸກລາຍການ</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">📊 ກຣາຟລາຍຮັບ-ລາຍຈ່າຍ 12 ເດືອນ</span>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <label style="font-size:13px;color:var(--txt2);">ປີ:</label>
+              <select id="chartYear" class="sel" onchange="updateDash()"></select>
+            </div>
+          </div>
+          <div class="chart-legend">
+            <span><span class="legend-dot" style="background:var(--green);"></span>ລາຍຮັບ</span>
+            <span><span class="legend-dot" style="background:var(--red);"></span>ລາຍຈ່າຍ</span>
+          </div>
+          <div class="chart-wrap">
+            <div class="bar-chart" id="barChart"></div>
+          </div>
+        </div>
+
+        <div class="dash-grid">
+          <div class="card">
+            <div class="card-head"><span class="card-title">🕐 ລາຍການລ່າສຸດ</span></div>
+            <div class="card-body" id="dashRecent" style="padding-top:8px;">
+              <div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p>ຍັງບໍ່ມີລາຍການ</p></div>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <div class="card-head"><span class="card-title">📈 ອັດຕາສ່ວນ</span></div>
+              <div class="card-body">
+                <div class="pl"><span>ລາຍຮັບ</span><span id="incPct">0%</span></div>
+                <div class="pb"><div class="pb-fill" id="incBar" style="width:0%;background:var(--green)"></div></div>
+                <div class="pl"><span>ລາຍຈ່າຍ</span><span id="expPct">0%</span></div>
+                <div class="pb"><div class="pb-fill" id="expBar" style="width:0%;background:var(--red)"></div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><span class="card-title">📋 ສະຖິຕິ</span></div>
+              <div class="card-body" style="font-size:13px;color:var(--txt2);line-height:2.2;">
+                <div>ທຸລະກຳທັງໝົດ: <strong id="st_total" style="color:var(--txt)">0</strong></div>
+                <div>ເດືອນທີ່ບັນທຶກ: <strong id="st_months" style="color:var(--txt)">-</strong></div>
+                <div>ສະເລ່ຍສຸດທິ/ເດືອນ: <strong id="st_avg" style="color:var(--txt)">-</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-purchase">
+        <div class="pg-head">
+          <div class="pg-title">🛒 ບັນຊີລາຍການຊື້ເຄື່ອງ</div>
+          <div class="pg-sub">ຈັດການລາຍການຊື້ເຄື່ອງ ແລະ ອຸປະກອນຕ່າງໆ</div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">ເພີ່ມຂໍ້ມູນລາຍການຊື້ເຄື່ອງໃໝ່</span>
+          </div>
+          <div class="card-body">
+             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 15px;">
+                <div><label class="fl">ວັນເດືອນປີ</label><input type="date" id="pDate" class="fc"></div>
+                <div style="grid-column: span 2;"><label class="fl">ລາຍຊື່ເຄື່ອງ</label><input type="text" id="pName" class="fc" placeholder="ຊື່ເຄື່ອງ..."></div>
+                <div><label class="fl">ຈຳນວນ</label><input type="number" id="pQty" class="fc" value="1" min="1" oninput="calcInlineTotal()"></div>
+                <div><label class="fl">ລາຄາ (₭)</label><input type="number" id="pPrice" class="fc" value="0" min="0" oninput="calcInlineTotal()"></div>
+                <div><label class="fl">ຫົວໜ່ວຍ</label><input type="text" id="pUnit" class="fc" placeholder="ອັນ, ຊຸດ..."></div>
+                <div style="grid-column: span 2;"><label class="fl">ໝາຍເຫດ</label><input type="text" id="pNote" class="fc" placeholder="..."></div>
+             </div>
+             <div style="margin-bottom:12px;">
+               <label class="fl">📎 ຮູບໃບບິນ / ໃບເກັບເງິນ</label>
+               <div class="receipt-upload-area" onclick="document.getElementById('pReceiptInput').click()">
+                 <input type="file" id="pReceiptInput" accept="image/*" style="display:none" onchange="previewReceipt('pReceiptInput','pReceiptPreview','pReceiptWrap')">
+                 <div class="receipt-upload-icon">🧾</div>
+                 <div class="receipt-upload-txt">ຄລິກເພື່ອເລືອກຮູບໃບບິນ (JPG, PNG)</div>
+               </div>
+               <div class="receipt-preview-wrap" id="pReceiptWrap">
+                 <img id="pReceiptPreview" class="receipt-preview-img" src="" alt="receipt preview">
+                 <button class="receipt-preview-remove" onclick="clearReceipt('pReceiptInput','pReceiptPreview','pReceiptWrap')">✕</button>
+               </div>
+             </div>
+             <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 15px;">
+                <div style="font-size: 16px; font-weight: bold;">ຜົນລວມເງິນ: <span id="pTotal" style="color: var(--green); font-family: var(--mono);">0 ₭</span></div>
+                <button class="btn btn-g" onclick="addPurchaseRow()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    ເພີ່ມລົງຕາຕະລາງ
+                </button>
+             </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">📋 ຕາຕະລາງລາຍການຊື້ເຄື່ອງ</span>
+          </div>
+          <div class="excel-table-wrap">
+            <table class="excel-table">
+              <thead>
+                <tr>
+                  <th style="text-align:center;">ລ/ດ</th>
+                  <th>ວ/ດ/ປ</th>
+                  <th>ລາຍຊື່ເຄື່ອງ</th>
+                  <th style="text-align:right;">ຈຳນວນ</th>
+                  <th style="text-align:right;">ລາຄາ (&#x20AD;)</th>
+                  <th style="text-align:right;">ຜົນລວມ (&#x20AD;)</th>
+                  <th style="text-align:center;">ຫົວໜ່ວຍ</th>
+                  <th>ໝາຍເຫດ</th>
+                  <th style="text-align:center;">ໃບບິນ</th>
+                  <th class="print-hide" style="text-align:center;">ຈັດການ</th>
+                </tr>
+              </thead>
+              <tbody id="purchaseBody"></tbody>
+              <tfoot class="excel-tfoot">
+                <tr>
+                  <td colspan="5" class="excel-total-label">ລວມເງິນທັງໝົດ:</td>
+                  <td id="grandTotal" class="excel-total-value">0 &#x20AD;</td>
+                  <td colspan="4"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-accounting">
+        <div class="doc-hdr">
+          <div class="doc-country">ສາທາລະນະລັດ ປະຊາທິປະໄຕ ປະຊາຊົນລາວ</div>
+          <div class="doc-slogan">ສັນຕິພາບ ເອກະລາດ ປະຊາທິປະໄຕ ເອກະພາບ ວັດທະນະຖາວອນ</div>
+          <div class="doc-tl">
+            <div class="doc-title">📒 ບັນຊີລາຍຮັບ-ລາຍຈ່າຍເງິນແຮສະໜາມ</div>
+            <div class="doc-org">ບໍລິສັດ: ເຂື່ອນໄຟຟ້ານ້ຳຊໍ້ ເມືອງວຽງທອງ ແຂວງບໍລິຄຳໄຊ</div>
+            <div class="doc-meta">
+              <span id="displayMonthYear">📅 ເດືອນ: ...</span>
+              <span>📍 ສະຖານທີ່: ແຮສະໜາມ</span>
+              <span>🔢 ເລກທີ: ............../ນຊ</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">📄 ລາຍການເງິນ</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-o" onclick="exportCSV()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export CSV
+              </button>
+              <button class="btn btn-g" onclick="openAdd()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                ເພີ່ມລາຍການ
+              </button>
+            </div>
+          </div>
+          <div class="fbar">
+            <select id="selMonth" class="sel" onchange="updateAcc()">
+              <option value="01">ມັງກອນ</option><option value="02">ກຸມພາ</option><option value="03">ມີນາ</option>
+              <option value="04">ເມສາ</option><option value="05">ພຶດສະພາ</option><option value="06">ມິຖຸນາ</option>
+              <option value="07">ກໍລະກົດ</option><option value="08">ສິງຫາ</option><option value="09">ກັນຍາ</option>
+              <option value="10">ຕຸລາ</option><option value="11">ພະຈິກ</option><option value="12">ທັນວາ</option>
+            </select>
+            <select id="selYear" class="sel" onchange="updateAcc()"></select>
+            <div class="srch">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" placeholder="ຄົ້ນຫາ..." id="searchInp" oninput="updateAcc()">
+            </div>
+          </div>
+          <div class="excel-table-wrap" style="margin-top:12px;">
+            <table class="excel-table">
+              <thead>
+                <tr>
+                  <th style="text-align:center;width:44px;">ລ/ດ</th>
+                  <th style="width:100px;">ວ/ດ/ປ</th>
+                  <th>ເນື້ອໃນ</th>
+                  <th style="text-align:right;width:130px;">ຮັບ (₭)</th>
+                  <th style="text-align:right;width:130px;">ຈ່າຍ (₭)</th>
+                  <th style="text-align:right;width:140px;">ຍອດເຫຼືອ (₭)</th>
+                  <th style="text-align:center;width:72px;">ຮູບໃບບິນ</th>
+                  <th>ໝາຍເຫດ</th>
+                  <th style="width:80px;text-align:center;" class="print-hide">ຈັດການ</th>
+                </tr>
+              </thead>
+              <tbody id="accBody"></tbody>
+              <tfoot class="excel-tfoot">
+                <tr>
+                  <td colspan="3" class="excel-total-label">ລວມທັງໝົດ:</td>
+                  <td id="sumInc" class="excel-total-value" style="color:var(--green);">0</td>
+                  <td id="sumExp" class="excel-total-value" style="color:var(--red);">0</td>
+                  <td id="sumNet" class="excel-total-value">0</td>
+                  <td colspan="3"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-lbl">ຍອດຍົກມາ (ຕົ້ນເດືອນ)</div>
+            <div class="stat-val" id="openBal" style="font-size:18px;">0 ₭</div>
+            <div class="stat-hint" id="openBalHint"></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-lbl">ຍອດຄົງເຫຼືອ (ທ້າຍເດືອນ)</div>
+            <div class="stat-val g" id="endBal" style="font-size:18px;">0 ₭</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-lbl">ຍອດລ້ວາດ (ທຸກເດືອນ)</div>
+            <div class="stat-val b" id="allBal" style="font-size:18px;">0 ₭</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="sig-section" id="sigSection"></div>
+            <div style="text-align:center;font-size:12px;color:var(--txt3);margin-top:12px;">ບໍລິຄຳໄຊ, ວັນທີ <span id="reportDate"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-quarterly">
+        <div class="pg-head">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+            <div><div class="pg-title">ສະຫຼຸບໄຕຣ໌ມາດ</div><div class="pg-sub">ສຽງ 4 ໄຕຣ໌ມາດ ຕໍ່ປີ</div></div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <label style="font-size:13px;color:var(--txt2);">ປີ:</label>
+              <select id="qYear" class="sel" onchange="updateQ()"></select>
+            </div>
+          </div>
+        </div>
+        <div class="q-grid" id="qCards"></div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">ລາຍລະອຽດລາຍເດືອນ</span></div>
+          <div class="tw"><table>
+            <thead><tr><th>ໄຕຣ໌ມາດ</th><th>ເດືອນ</th><th style="text-align:right;">ລາຍຮັບ</th><th style="text-align:right;">ລາຍຈ່າຍ</th><th style="text-align:right;">ສຸດທິ</th></tr></thead>
+            <tbody id="qDetail"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <div class="page" id="page-annual">
+        <div class="pg-head">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+            <div><div class="pg-title">ສະຫຼຸບລາຍປີ</div><div class="pg-sub">ສຽງຂໍ້ມູນຕໍ່ປີ</div></div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <label style="font-size:13px;color:var(--txt2);">ປີ:</label>
+              <select id="aYear" class="sel" onchange="updateA()"></select>
+              <button class="btn btn-o" onclick="exportAnnualCSV()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export CSV
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="stats-grid" id="aStats"></div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">ຍອດ 12 ເດືອນ</span></div>
+          <div class="tw"><table>
+            <thead><tr><th>ເດືອນ</th><th style="text-align:right;">ລາຍຮັບ</th><th style="text-align:right;">ລາຍຈ່າຍ</th><th style="text-align:right;">ສຸດທິ</th><th style="text-align:right;">ຍອດໂກຍ</th><th style="width:120px;">ສາຍ</th></tr></thead>
+            <tbody id="aBody"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <div class="page" id="page-budget">
+        <div class="pg-head">
+          <div class="pg-title">ແຜນການຊື້ເຄື່ອງປະຈຳເດືອນ</div>
+          <div class="pg-sub">ວາງແຜນງົບປະມານ ແລະ ຕິດຕາມການໃຊ້ຈ່າຍ</div>
+        </div>
+        <div class="card" style="margin-bottom:12px;">
+          <div class="card-body" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:14px 16px;">
+            <label class="fl" style="margin:0;white-space:nowrap;">📅 ເດືອນ/ປີ:</label>
+            <select id="bMonth" class="sel" onchange="renderBudget()" style="width:140px;"></select>
+            <select id="bYear" class="sel" onchange="renderBudget()" style="width:100px;"></select>
+            <button class="btn btn-g" onclick="openBudgetItemModal()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              ເພີ່ມລາຍການ
+            </button>
+          </div>
+        </div>
+        <div class="stats-grid" style="margin-bottom:12px;">
+          <div class="stat-card"><div class="stat-lbl">💰 ງົບທີ່ວາງແຜນ</div><div class="stat-val g" id="bTotalPlan">0 ₭</div></div>
+          <div class="stat-card"><div class="stat-lbl">🛒 ໃຊ້ໄປແລ້ວ</div><div class="stat-val r" id="bTotalUsed">0 ₭</div></div>
+          <div class="stat-card"><div class="stat-lbl">📊 ຄົງເຫຼືອ</div><div class="stat-val" id="bTotalLeft">0 ₭</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">📋 ລາຍການແຜນການຊື້ເຄື່ອງ</span></div>
+          <div class="excel-table-wrap">
+            <table class="excel-table">
+              <thead>
+                <tr>
+                  <th style="text-align:center;width:44px;">ລ/ດ</th>
+                  <th>ລາຍການ</th>
+                  <th>ໝວດໝູ່</th>
+                  <th style="text-align:right;width:140px;">ງົບວາງແຜນ (₭)</th>
+                  <th style="text-align:right;width:140px;">ໃຊ້ຈິງ (₭)</th>
+                  <th style="text-align:center;width:120px;">ສະຖານະ</th>
+                  <th>ໝາຍເຫດ</th>
+                  <th style="text-align:center;width:70px;">ໃບບິນ</th>
+                  <th class="print-hide" style="text-align:center;width:80px;">ຈັດການ</th>
+                </tr>
+              </thead>
+              <tbody id="budgetBody"></tbody>
+              <tfoot class="excel-tfoot">
+                <tr>
+                  <td colspan="3" class="excel-total-label">ລວມທັງໝົດ:</td>
+                  <td id="bFootPlan" class="excel-total-value" style="color:var(--green);">0 ₭</td>
+                  <td id="bFootUsed" class="excel-total-value" style="color:var(--red);">0 ₭</td>
+                  <td colspan="4"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px;">
+          <div class="card-head"><span class="card-title">✍️ ລາຍເຊັນອະນຸມັດແຜນ</span></div>
+          <div class="card-body" style="padding:16px;">
+            <div class="sig-section" id="budgetSigSection"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-ov" id="budgetDetailOv" onclick="this.classList.remove('active')">
+        <div class="modal" style="max-width:500px;" onclick="event.stopPropagation()">
+          <div class="modal-head">
+            <h3 id="bdTitle">ລາຍລະອຽດ</h3>
+            <button class="modal-close" onclick="document.getElementById('budgetDetailOv').classList.remove('active')">✕</button>
+          </div>
+          <div class="modal-body" id="bdBody"></div>
+          <div class="modal-footer">
+            <button class="btn btn-o" onclick="document.getElementById('budgetDetailOv').classList.remove('active')">ປິດ</button>
+            <button class="btn btn-o" id="bdEditBtn">✏️ ແກ້ໄຂ</button>
+            <button class="btn btn-r" id="bdDelBtn">🗑 ລຶບ</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-ov" id="budgetModalOv" onclick="closeBudgetModal()">
+        <div class="modal" onclick="event.stopPropagation()">
+          <div class="modal-head">
+            <h3 id="budgetModalTitle">ເພີ່ມລາຍການ</h3>
+            <button class="modal-close" onclick="closeBudgetModal()">✕</button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="bItemId">
+            <div class="fg"><label class="fl">ລາຍການ *</label><input type="text" id="bItemName" class="fc" placeholder="ຊື່ລາຍການ..."></div>
+            <div class="fg"><label class="fl">ໝວດໝູ່</label>
+              <select id="bItemCat" class="sel fc">
+                <option value="ອຸປະກອນ">ອຸປະກອນ</option>
+                <option value="ວັດສະດຸ">ວັດສະດຸ</option>
+                <option value="ເຄື່ອງຈັກ">ເຄື່ອງຈັກ</option>
+                <option value="ອາຫານ">ອາຫານ</option>
+                <option value="ນ້ຳມັນ">ນ້ຳມັນ</option>
+                <option value="ອື່ນໆ">ອື່ນໆ</option>
+              </select>
+            </div>
+            <div class="fg"><label class="fl">ງົບວາງແຜນ (₭) *</label><input type="number" id="bItemPlan" class="fc" placeholder="0" min="0"></div>
+            <div class="fg"><label class="fl">ໃຊ້ຈິງ (₭)</label><input type="number" id="bItemUsed" class="fc" placeholder="0" min="0"></div>
+            <div class="fg"><label class="fl">ສະຖານະ</label>
+              <select id="bItemStatus" class="sel fc">
+                <option value="ວາງແຜນ">📝 ວາງແຜນ</option>
+                <option value="ກຳລັງດຳເນີນ">🔄 ກຳລັງດຳເນີນ</option>
+                <option value="ສຳເລັດ">✅ ສຳເລັດ</option>
+                <option value="ຍົກເລີກ">❌ ຍົກເລີກ</option>
+              </select>
+            </div>
+            <div class="fg"><label class="fl">ໝາຍເຫດ</label><input type="text" id="bItemNote" class="fc" placeholder="ໝາຍເຫດ..."></div>
+            <div class="fg">
+              <label class="fl">📎 ຮູບໃບບິນ</label>
+              <div class="receipt-upload-area" onclick="document.getElementById('bReceiptInput').click()">
+                <input type="file" id="bReceiptInput" accept="image/*" style="display:none" onchange="previewReceipt('bReceiptInput','bReceiptPreview','bReceiptWrap')">
+                <div class="receipt-upload-icon">🧾</div>
+                <div class="receipt-upload-txt">ຄລິກເພື່ອເລືອກຮູບໃບບິນ</div>
+              </div>
+              <div class="receipt-preview-wrap" id="bReceiptWrap">
+                <img id="bReceiptPreview" class="receipt-preview-img" src="" alt="receipt">
+                <button class="receipt-preview-remove" onclick="clearReceipt('bReceiptInput','bReceiptPreview','bReceiptWrap')">✕</button>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-o" onclick="closeBudgetModal()">ຍົກເລີກ</button>
+            <button class="btn btn-g" onclick="saveBudgetItem()">💾 ບັນທຶກ</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-settings">
+        <div class="pg-head"><div class="pg-title">ຕັ້ງຄ່າ</div><div class="pg-sub">ຈັດການຂໍ້ມູນລະບົບ</div></div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">ຂໍ້ມູນ</span></div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:12px;">
+            <div id="settInfo" style="font-size:12px;color:var(--txt3);"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">ກ່ຽວກັບ</span></div>
+          <div class="card-body" style="font-size:13px;color:var(--txt2);line-height:2.2;">
+            <div>ລະບົບ: <strong style="color:var(--txt)">ບັນຊີລາຍຮັບ-ລາຍຈ່າຍ v3.0</strong></div>
+            <div>ຫົວໜ່ວຍ: <strong style="color:var(--txt)">ເຂື່ອນໄຟຟ້ານ້ຳຊໍ້ ເມືອງວຽງທອງ ແຂວງບໍລິຄຳໄຊ</strong></div>
+            <div>ຄຸນສົມບັດ: <strong style="color:var(--txt)">ບັນຊີ, ກຣາຟ, ລາຍງານ, Export CSV, ເຊັນເອກະສານ</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="modal-ov" id="modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">ເພີ່ມລາຍການໃໝ່</h3>
+      <button class="modal-close" onclick="closeModal()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="tid">
+      <div class="fg"><label class="fl">ວັນທີ</label><input type="date" id="tDate" class="fc"></div>
+      <div class="fg"><label class="fl">ເນື້ອໃນລາຍການ</label><input type="text" id="tDesc" class="fc" placeholder="ປ້ອນເນື້ອໃນ..."></div>
+      <div class="fg"><label class="fl">ປະເພດ</label>
+        <select id="tType" class="fc">
+          <option value="income">💰 ລາຍຮັບ (ເງິນເຂົ້າ)</option>
+          <option value="expense">💸 ລາຍຈ່າຍ (ເງິນອອກ)</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">ຈຳນວນເງິນ (₭)</label><input type="number" id="tAmt" class="fc" placeholder="0" min="0"></div>
+      <div class="fg"><label class="fl">ໝາຍເຫດ</label><input type="text" id="tNote" class="fc" placeholder="ໝາຍເຫດ (ຖ້າມີ)..."></div>
+      <div class="fg">
+        <label class="fl">📎 ຮູບໃບບິນ / ໃບເກັບເງິນ</label>
+        <div class="receipt-upload-area" onclick="document.getElementById('tReceiptInput').click()">
+          <input type="file" id="tReceiptInput" accept="image/*" style="display:none" onchange="previewReceipt('tReceiptInput','tReceiptPreview','tReceiptWrap')">
+          <div class="receipt-upload-icon">🧾</div>
+          <div class="receipt-upload-txt">ຄລິກເພື່ອເລືອກຮູບໃບບິນ</div>
+        </div>
+        <div class="receipt-preview-wrap" id="tReceiptWrap">
+          <img id="tReceiptPreview" class="receipt-preview-img" src="" alt="receipt">
+          <button class="receipt-preview-remove" onclick="clearReceipt('tReceiptInput','tReceiptPreview','tReceiptWrap')">✕</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-o" onclick="closeModal()">ຍົກເລີກ</button>
+      <button class="btn btn-g" onclick="saveTrans()">💾 ບັນທຶກ</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+// ===== RECEIPT HELPERS =====
+function previewReceipt(inputId, previewId, wrapId) {
+  const file = document.getElementById(inputId).files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const prev = document.getElementById(previewId);
+    const wrap = document.getElementById(wrapId);
+    prev.src = e.target.result;
+    wrap.classList.add('has-img');
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearReceipt(inputId, previewId, wrapId) {
+  const inp = document.getElementById(inputId);
+  const prev = document.getElementById(previewId);
+  const wrap = document.getElementById(wrapId);
+  if (inp) inp.value = '';
+  if (prev) prev.src = '';
+  if (wrap) wrap.classList.remove('has-img');
+}
+
+function viewReceiptImg(src) {
+  let ov = document.getElementById('receiptViewOv');
+  if (!ov) {
+    ov = document.createElement('div');
+    ov.id = 'receiptViewOv';
+    ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;display:flex;align-items:center;justify-content:center;cursor:zoom-out;padding:20px;';
+    ov.onclick = () => ov.remove();
+    document.body.appendChild(ov);
+  }
+  ov.innerHTML = '<img src="'+src+'" style="max-width:100%;max-height:90vh;object-fit:contain;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.6);">';
+  document.body.appendChild(ov);
+}
+
+// Event delegation for receipt thumbnails
+document.addEventListener('click', function(e) {
+  const el = e.target;
+  if (el.tagName === 'IMG' && el.classList.contains('receipt-thumb')) {
+    const rid = el.dataset.rid;
+    if (rid) {
+      getReceipt(rid).then(dataUrl => { if (dataUrl) viewReceiptImg(dataUrl); });
+    }
+  }
+});
+
+// ===== INDEXEDDB FOR RECEIPTS =====
+let receiptDB = null;
+
+function openReceiptDB() {
+  return new Promise((resolve, reject) => {
+    if (receiptDB) { resolve(receiptDB); return; }
+    const req = indexedDB.open('NamSorReceipts', 1);
+    req.onupgradeneeded = e => {
+      e.target.result.createObjectStore('receipts', { keyPath: 'id' });
+    };
+    req.onsuccess = e => { receiptDB = e.target.result; resolve(receiptDB); };
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function saveReceipt(id, dataUrl) {
+  return openReceiptDB().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction('receipts', 'readwrite');
+    tx.objectStore('receipts').put({ id, dataUrl });
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  }));
+}
+
+function getReceipt(id) {
+  return openReceiptDB().then(db => new Promise((resolve) => {
+    if (!id) { resolve(null); return; }
+    const req = db.transaction('receipts', 'readonly').objectStore('receipts').get(id);
+    req.onsuccess = () => resolve(req.result ? req.result.dataUrl : null);
+    req.onerror = () => resolve(null);
+  }));
+}
+
+function deleteReceipt(id) {
+  return openReceiptDB().then(db => new Promise(resolve => {
+    if (!id) { resolve(); return; }
+    const tx = db.transaction('receipts', 'readwrite');
+    tx.objectStore('receipts').delete(id);
+    tx.oncomplete = resolve;
+  }));
+}
+
+function loadReceiptImg(receiptId, imgEl, wrapEl) {
+  if (!receiptId) return;
+  getReceipt(receiptId).then(dataUrl => {
+    if (dataUrl && imgEl) {
+      imgEl.src = dataUrl;
+      if (wrapEl) wrapEl.classList.add('has-img');
+    }
+  });
+}
+
+function loadTableReceipts() {
+  document.querySelectorAll('img[data-rid]').forEach(img => {
+    const rid = img.getAttribute('data-rid');
+    if (!rid || img.src.startsWith('data:')) return;
+    getReceipt(rid).then(dataUrl => { if (dataUrl) img.src = dataUrl; });
+  });
+}
+
+// ===== ລະບົບໂຫລດຂໍ້ມູນ (ປັບປຸງໃໝ່ປ້ອງກັນຂໍ້ມູນຫາຍ) =====
+let db = [];
+try { 
+  const rawData = localStorage.getItem('acc_v2');
+  db = rawData ? JSON.parse(rawData) : [];
+  if (!Array.isArray(db)) db = []; 
+} catch(e) { db = []; }
+
+let purchaseItems = [];
+try {
+  const rawP = localStorage.getItem('namSorPurchaseItems');
+  purchaseItems = rawP ? JSON.parse(rawP) : [];
+  if (!Array.isArray(purchaseItems)) purchaseItems = [];
+} catch(e) { purchaseItems = []; }
+
+let budgetData = {};
+try { 
+  const rawB = localStorage.getItem('namSorBudget_v1');
+  budgetData = rawB ? JSON.parse(rawB) : {}; 
+} catch(e) { budgetData = {}; }
+
+let sigData = {};
+try { 
+  const rawS = localStorage.getItem('sigData_v2');
+  sigData = rawS ? JSON.parse(rawS) : {}; 
+} catch(e) { sigData = {}; }
+
+function save() { localStorage.setItem('acc_v2', JSON.stringify(db)); }
+function saveBudget() { localStorage.setItem('namSorBudget_v1', JSON.stringify(budgetData)); }
+function saveSigs() { localStorage.setItem('sigData_v2', JSON.stringify(sigData)); }
+
+function getBudgetKey() {
+  const m = document.getElementById('bMonth');
+  const y = document.getElementById('bYear');
+  if (!m || !y) return '';
+  return y.value + '_' + String(m.value).padStart(2,'0');
+}
+function getBudgetItems() { return budgetData[getBudgetKey()] || []; }
+
+function initBudgetSelectors() {
+  const mSel = document.getElementById('bMonth');
+  const ySel = document.getElementById('bYear');
+  if (!mSel || mSel.options.length > 0) return;
+  const months = ['ມັງກອນ','ກຸມພາ','ມີນາ','ເມສາ','ພຶດສະພາ','ມິຖຸນາ','ກໍລະກົດ','ສິງຫາ','ກັນຍາ','ຕຸລາ','ພະຈິກ','ທັນວາ'];
+  months.forEach((m, i) => {
+    const o = document.createElement('option');
+    o.value = i + 1;
+    o.textContent = m;
+    mSel.appendChild(o);
+  });
+  const cy = new Date().getFullYear();
+  for (let y = cy - 1; y <= cy + 1; y++) {
+    const o = document.createElement('option');
+    o.value = y; o.textContent = y;
+    ySel.appendChild(o);
+  }
+  mSel.value = new Date().getMonth() + 1;
+  ySel.value = cy;
+}
+
+function renderBudget() {
+  const items = getBudgetItems();
+  const tbody = document.getElementById('budgetBody');
+  if (!tbody) return;
+  let totalPlan = 0, totalUsed = 0;
+  const statusColor = { 'ວາງແຜນ':'var(--txt2)', 'ກຳລັງດຳເນີນ':'var(--yellow,#d29922)', 'ສຳເລັດ':'var(--green)', 'ຍົກເລີກ':'var(--red)' };
+  tbody.innerHTML = items.length ? items.map((item, i) => {
+    totalPlan += item.plan || 0;
+    totalUsed += item.used || 0;
+    const left = (item.plan || 0) - (item.used || 0);
+    const pct = item.plan > 0 ? Math.min(100, Math.round((item.used||0) / item.plan * 100)) : 0;
+    const barColor = pct >= 100 ? 'var(--red)' : pct >= 80 ? 'var(--yellow,#d29922)' : 'var(--green)';
+    return `<tr style="cursor:pointer;" onclick="viewBudgetDetail(${i})">
+      <td class="col-no"><span class="excel-row-num">${i+1}</span></td>
+      <td class="col-name">${item.name}</td>
+      <td><span class="excel-unit-badge">${item.cat||'ອື່ນໆ'}</span></td>
+      <td class="col-total" style="color:var(--green);">${fmtAbs(item.plan||0)}</td>
+      <td class="col-total" style="color:${left<0?'var(--red)':'var(--txt)'};">${fmtAbs(item.used||0)}</td>
+      <td style="text-align:center;">
+        <div style="font-size:11px;color:${statusColor[item.status]||'var(--txt2)'};font-weight:600;">${item.status||'ວາງແຜນ'}</div>
+        <div style="background:var(--bg4);border-radius:4px;height:4px;margin-top:4px;overflow:hidden;">
+          <div style="width:${pct}%;height:4px;background:${barColor};border-radius:4px;transition:width 0.3s;"></div>
+        </div>
+        <div style="font-size:10px;color:var(--txt3);margin-top:2px;">${pct}%</div>
+      </td>
+      <td class="col-note">${item.note||'<span style="color:var(--txt3)">-</span>'}</td>
+      <td style="text-align:center;">${item.receiptId ? '<img class="receipt-thumb" data-rid="'+item.receiptId+'" src="" style="cursor:pointer;">' : '<span style="color:var(--txt3);font-size:11px;">-</span>'}</td>
+      <td class="print-hide" style="text-align:center;">
+        <button class="btn btn-o btn-sm" onclick="event.stopPropagation();editBudgetItem(${i})">✏️</button>
+        <button class="btn btn-r btn-sm" onclick="event.stopPropagation();deleteBudgetItem(${i})">🗑</button>
+      </td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--txt3);">ຍັງບໍ່ມີລາຍການ — ກົດ "ເພີ່ມລາຍການ" ເພື່ອເລີ່ມ</td></tr>';
+
+  const left = totalPlan - totalUsed;
+  document.getElementById('bTotalPlan').textContent = fmtAbs(totalPlan);
+  document.getElementById('bTotalUsed').textContent = fmtAbs(totalUsed);
+  const bLeft = document.getElementById('bTotalLeft');
+  bLeft.textContent = fmtAbs(left);
+  bLeft.className = 'stat-val ' + (left >= 0 ? 'g' : 'r');
+  document.getElementById('bFootPlan').textContent = fmtAbs(totalPlan);
+  document.getElementById('bFootUsed').textContent = fmtAbs(totalUsed);
+  setTimeout(loadTableReceipts, 80);
+  setTimeout(renderBudgetSig, 50);
+}
+
+function openBudgetItemModal(idx) {
+  document.getElementById('bItemId').value = idx !== undefined ? idx : '';
+  document.getElementById('bItemName').value = '';
+  document.getElementById('bItemCat').value = 'ອຸປະກອນ';
+  document.getElementById('bItemPlan').value = '';
+  document.getElementById('bItemUsed').value = '';
+  document.getElementById('bItemStatus').value = 'ວາງແຜນ';
+  document.getElementById('bItemNote').value = '';
+  document.getElementById('budgetModalTitle').textContent = idx !== undefined ? 'ແກ້ໄຂລາຍການ' : 'ເພີ່ມລາຍການ';
+  
+  clearReceipt('bReceiptInput','bReceiptPreview','bReceiptWrap');
+  if (idx !== undefined) {
+    const item = getBudgetItems()[idx];
+    if (item) {
+      document.getElementById('bItemName').value = item.name || '';
+      document.getElementById('bItemCat').value = item.cat || 'ອຸປະກອນ';
+      document.getElementById('bItemPlan').value = item.plan || '';
+      document.getElementById('bItemUsed').value = item.used || '';
+      document.getElementById('bItemStatus').value = item.status || 'ວາງແຜນ';
+      document.getElementById('bItemNote').value = item.note || '';
+      if (item.receiptId) {
+        getReceipt(item.receiptId).then(dataUrl => {
+          if (dataUrl) {
+            document.getElementById('bReceiptPreview').src = dataUrl;
+            document.getElementById('bReceiptWrap').classList.add('has-img');
+          }
+        });
+      }
+    }
+  }
+  document.getElementById('budgetModalOv').classList.add('active');
+}
+
+function viewBudgetDetail(idx) {
+  const item = getBudgetItems()[idx];
+  if (!item) return;
+  const left = (item.plan||0) - (item.used||0);
+  const pct  = item.plan > 0 ? Math.min(100, Math.round((item.used||0)/item.plan*100)) : 0;
+  const barColor = pct>=100?'var(--red)':pct>=80?'var(--yellow,#d29922)':'var(--green)';
+  const statusColor = {'ວາງແຜນ':'var(--txt2)','ກຳລັງດຳເນີນ':'var(--yellow,#d29922)','ສຳເລັດ':'var(--green)','ຍົກເລີກ':'var(--red)'};
+  document.getElementById('bdTitle').textContent = item.name;
+  document.getElementById('bdBody').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:14px;padding-bottom:4px;">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <span class="excel-unit-badge">${item.cat||'ອື່ນໆ'}</span>
+        <span style="font-size:12px;font-weight:600;color:${statusColor[item.status]||'var(--txt2)'};">${item.status||'ວາງແຜນ'}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div style="background:var(--bg3);border-radius:var(--r);padding:10px;text-align:center;">
+          <div style="font-size:10px;color:var(--txt3);margin-bottom:4px;">ງົບວາງແຜນ</div>
+          <div style="font-size:14px;font-weight:700;color:var(--green);font-family:var(--mono);">${fmtAbs(item.plan||0)}</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:var(--r);padding:10px;text-align:center;">
+          <div style="font-size:10px;color:var(--txt3);margin-bottom:4px;">ໃຊ້ຈິງ</div>
+          <div style="font-size:14px;font-weight:700;color:var(--red);font-family:var(--mono);">${fmtAbs(item.used||0)}</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:var(--r);padding:10px;text-align:center;">
+          <div style="font-size:10px;color:var(--txt3);margin-bottom:4px;">ຄົງເຫຼືອ</div>
+          <div style="font-size:14px;font-weight:700;color:${left>=0?'var(--green)':'var(--red)'};font-family:var(--mono);">${fmtAbs(left)}</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--txt3);margin-bottom:6px;">ຄວາມຄືບໜ້າ ${pct}%</div>
+        <div style="background:var(--bg4);border-radius:6px;height:8px;overflow:hidden;">
+          <div style="width:${pct}%;height:8px;background:${barColor};border-radius:6px;transition:width 0.4s;"></div>
+        </div>
+      </div>
+      ${item.note ? '<div style="background:var(--bg3);border-radius:var(--r);padding:10px;font-size:13px;color:var(--txt2);">📝 '+item.note+'</div>' : ''}
+      <div id="bdReceiptArea" style="text-align:center;"></div>
+    </div>`;
+  
+  if (item.receiptId) {
+    getReceipt(item.receiptId).then(dataUrl => {
+      const el = document.getElementById('bdReceiptArea');
+      if (el && dataUrl) {
+        const img = document.createElement('img');
+        img.src = dataUrl;
+        img.style.cssText = 'max-width:100%;max-height:220px;object-fit:contain;border-radius:var(--r);border:1px solid var(--border);background:#fff;cursor:zoom-in;';
+        img.onclick = () => viewReceiptImg(dataUrl);
+        el.innerHTML = '';
+        el.appendChild(img);
+      }
+    });
+  }
+  document.getElementById('bdEditBtn').onclick = () => { document.getElementById('budgetDetailOv').classList.remove('active'); editBudgetItem(idx); };
+  document.getElementById('bdDelBtn').onclick  = () => { document.getElementById('budgetDetailOv').classList.remove('active'); deleteBudgetItem(idx); };
+  document.getElementById('budgetDetailOv').classList.add('active');
+}
+
+function editBudgetItem(idx) { openBudgetItemModal(idx); }
+
+function closeBudgetModal() {
+  document.getElementById('budgetModalOv').classList.remove('active');
+}
+
+function saveBudgetItem() {
+  const name = document.getElementById('bItemName').value.trim();
+  if (!name) { alert('⚠️ ກະລຸນາໃສ່ຊື່ລາຍການ'); return; }
+  const cat    = document.getElementById('bItemCat').value;
+  const plan   = parseFloat(document.getElementById('bItemPlan').value) || 0;
+  const used   = parseFloat(document.getElementById('bItemUsed').value) || 0;
+  const status = document.getElementById('bItemStatus').value;
+  const note   = document.getElementById('bItemNote').value.trim();
+  const key    = getBudgetKey();
+  if (!budgetData[key]) budgetData[key] = [];
+  const idxVal = document.getElementById('bItemId').value;
+  const bPrev  = document.getElementById('bReceiptPreview');
+  const newDataUrl = bPrev && bPrev.src.startsWith('data:') ? bPrev.src : null;
+  const existItem  = idxVal !== '' ? (budgetData[key][parseInt(idxVal)] || {}) : {};
+  const existRid   = existItem.receiptId || '';
+  const receiptId  = newDataUrl ? ('b_' + Date.now()) : existRid;
+  const doSave = newDataUrl ? saveReceipt(receiptId, newDataUrl) : Promise.resolve();
+  
+  doSave.then(() => {
+    const newItem = { name, cat, plan, used, status, note, receiptId };
+    if (idxVal !== '') budgetData[key][parseInt(idxVal)] = newItem;
+    else budgetData[key].push(newItem);
+    saveBudget();
+    closeBudgetModal();
+    renderBudget();
+    showToast(idxVal !== '' ? '✅ ແກ້ໄຂລາຍການສຳເລັດ' : '✅ ເພີ່ມລາຍການສຳເລັດ');
+  });
+}
+
+function deleteBudgetItem(idx) {
+  if (!confirm('❌ ລຶບລາຍການນີ້?')) return;
+  const key = getBudgetKey();
+  const item = budgetData[key] && budgetData[key][idx];
+  if (item && item.receiptId) deleteReceipt(item.receiptId);
+  budgetData[key].splice(idx, 1);
+  saveBudget();
+  renderBudget();
+  showToast('🗑 ລຶບລາຍການແລ້ວ');
+}
+
+// ===== BUDGET SIGNATURES =====
+const BUDGET_SIG_ROLES = ['ຜູ້ຮັບຜິດຊອບ','ຜູ້ອຳນວຍການ','ຫົວໜ້າເຂື່ອນ','ຜູ້ອະນຸມັດ'];
+function getBudgetSigKey(role) {
+  const m = document.getElementById('bMonth');
+  const y = document.getElementById('bYear');
+  if (!m || !y) return 'budget__' + role;
+  return 'budget_' + y.value + '_' + String(m.value).padStart(2,'0') + '_' + role;
+}
+
+function renderBudgetSig() {
+  const sec = document.getElementById('budgetSigSection');
+  if (!sec) return;
+  sec.innerHTML = BUDGET_SIG_ROLES.map(role => {
+    const k = role.replace(/[^a-zA-Zຂ-ໝ]/g,'_');
+    const s = sigData[getBudgetSigKey(role)] || {};
+    return `<div class="sig-box">
+      <div class="sig-lbl">${role}</div>
+      <div class="sig-canvas-wrap${s.approved?' signed':''}" id="bsigwrap_${k}">
+        <canvas id="bsigcanvas_${k}" width="300" height="80"></canvas>
+      </div>
+      <div class="sig-actions">
+        ${s.approved
+          ? `<button class="sig-btn approve" onclick="openBudgetSigModal('${role}')">✅ ເຊັນແລ້ວ — ແກ້ໄຂ</button> <button class="sig-btn clear-s" onclick="clearBudgetSig('${role}')">ລຶບ</button>`
+          : `<button class="sig-btn approve" onclick="openBudgetSigModal('${role}')">✍️ ເຊັນ</button>`}
+      </div>
+      <div class="sig-line"></div>
+      <input class="fc" style="font-size:11px;padding:3px 6px;text-align:center;" value="${s.name||''}" placeholder="ຊື່ຜູ້ເຊັນ" onchange="updateBudgetSigName('${role}',this.value)">
+    </div>`;
+  }).join('');
+  BUDGET_SIG_ROLES.forEach(role => {
+    const s = sigData[getBudgetSigKey(role)] || {};
+    if (s.dataUrl) {
+      const k = role.replace(/[^a-zA-Zຂ-ໝ]/g,'_');
+      paintBudgetSig(k, s.dataUrl);
+    }
+  });
+}
+
+function paintBudgetSig(k, dataUrl) {
+  const canvas = document.getElementById('bsigcanvas_'+k);
+  if (!canvas) return;
+  const img = new Image();
+  img.onload = () => {
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.drawImage(img,0,0,canvas.width,canvas.height);
+  };
+  img.src = dataUrl;
+}
+
+function updateBudgetSigName(role, name) {
+  const sk = getBudgetSigKey(role);
+  if (!sigData[sk]) sigData[sk] = {};
+  sigData[sk].name = name;
+  saveSigs();
+}
+
+function clearBudgetSig(role) {
+  if (!confirm('ລຶບລາຍເຊັນຂອງ ' + role + '?')) return;
+  delete sigData[getBudgetSigKey(role)];
+  saveSigs();
+  renderBudgetSig();
+}
+
+let budgetSigModalRole = '';
+function openBudgetSigModal(role) {
+  budgetSigModalRole = role;
+  openSigModal(role, true);
+}
+
+
+const MN = ["ມັງກອນ","ກຸມພາ","ມີນາ","ເມສາ","ພຶດສະພາ","ມິຖຸນາ","ກໍລະກົດ","ສິງຫາ","ກັນຍາ","ຕຸລາ","ພະຈິກ","ທັນວາ"];
+const QS = [
+  {n:'Q1',m:[1,2,3],c:'q1'},{n:'Q2',m:[4,5,6],c:'q2'},
+  {n:'Q3',m:[7,8,9],c:'q3'},{n:'Q4',m:[10,11,12],c:'q4'}
+];
+const TITLES = {dashboard:'ພາບລວມ',budget:'ແຜນການຊື້ເຄື່ອງປະຈຳເດືອນ',purchase:'ບັນຊີລາຍການຊື້ເຄື່ອງ',accounting:'ບັນຊີລາຍການ',quarterly:'ສະຫຼຸບໄຕຣ໌ມາດ',annual:'ສະຫຼຸບລາຍປີ',settings:'ຕັ້ງຄ່າ'};
+
+function fmtAbs(n) { return new Intl.NumberFormat('en-US').format(Math.abs(n)) + ' ₭'; }
+function fmt(n) { return (n < 0 ? '−' : '') + fmtAbs(n); }
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ===== NAVIGATION =====
+function go(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const ni = document.querySelector(`.nav-item[data-page="${id}"]`);
+  if (ni) ni.classList.add('active');
+  document.getElementById('pageTitle').textContent = TITLES[id];
+  sessionStorage.setItem('activePage', id);
+  
+  if (id==='accounting') { updateAcc(); renderSigSection(); }
+  if (id==='budget') { initBudgetSelectors(); renderBudget(); renderBudgetSig(); }
+  if (id==='purchase') renderPurchaseTable();
+  if (id==='dashboard') updateDash();
+  if (id==='quarterly') updateQ();
+  if (id==='annual') updateA();
+  if (id==='settings') updateSett();
+}
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('collapsed');
+  document.getElementById('main').classList.toggle('expanded');
+}
+
+// ===== PURCHASE LOGIC (ບັນຊີລາຍການຊື້ເຄື່ອງ) =====
+function calcInlineTotal() {
+    const qty = parseFloat(document.getElementById('pQty').value) || 0;
+    const price = parseFloat(document.getElementById('pPrice').value) || 0;
+    document.getElementById('pTotal').textContent = fmtAbs(qty * price);
+}
+
+function renderPurchaseTable() {
+    const tbody = document.getElementById('purchaseBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    let grandTotal = 0;
+
+    if (purchaseItems.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--txt3);">ຍັງບໍ່ມີລາຍການຊື້ເຄື່ອງ</td></tr>';
+        document.getElementById('grandTotal').textContent = fmtAbs(0);
+        return;
+    }
+
+    purchaseItems.forEach((item, index) => {
+        const total = item.qty * item.price;
+        grandTotal += total;
+        
+        tbody.innerHTML += `<tr>
+            <td class="col-no"><span class="excel-row-num">${index + 1}</span></td>
+            <td class="col-date">${new Date(item.date).toLocaleDateString('en-GB')}</td>
+            <td class="col-name">${item.name}</td>
+            <td class="col-qty">${item.qty.toLocaleString('lo-LA')}</td>
+            <td class="col-price">${item.price > 0 ? fmtAbs(item.price) : '0 ₭'}</td>
+            <td class="col-total">${fmtAbs(total)}</td>
+            <td class="col-unit">${item.unit ? '<span class="excel-unit-badge">'+item.unit+'</span>' : '<span style="color:var(--txt3)">-</span>'}</td>
+            <td class="col-note">${item.note || '<span style="color:var(--txt3)">-</span>'}</td>
+            <td style="text-align:center;">${item.receiptId ? '<img class="receipt-thumb" data-receipt="'+index+'" data-rid="'+item.receiptId+'" src="" style="cursor:pointer;">' : '<span style="color:var(--txt3);font-size:11px;">-</span>'}</td>
+            <td class="col-action print-hide">
+                <button class="btn btn-r btn-sm" onclick="deletePurchaseItem(${index})" style="padding:4px 6px;">🗑</button>
+            </td>
+        </tr>`;
+    });
+    document.getElementById('grandTotal').textContent = fmtAbs(grandTotal);
+    setTimeout(loadTableReceipts, 80);
+}
+
+function addPurchaseRow() {
+    const date = document.getElementById('pDate').value;
+    const name = document.getElementById('pName').value.trim();
+    const qty = parseFloat(document.getElementById('pQty').value) || 0;
+    const price = parseFloat(document.getElementById('pPrice').value) || 0;
+    const unit = document.getElementById('pUnit').value.trim();
+    const note = document.getElementById('pNote').value.trim();
+    const receiptPreview = document.getElementById('pReceiptPreview');
+    const receiptDataUrl = receiptPreview && receiptPreview.src.startsWith('data:') ? receiptPreview.src : null;
+
+    if (!date || !name || qty <= 0 || price < 0) {
+        alert('⚠️ ກະລຸນາປ່ອນຂໍ້ມູນ ວັນທີ, ລາຍຊື່ເຄື່ອງ, ຈຳນວນ ແລະ ລາຄາ ໃຫ້ຄົບຖ້ວນ');
+        return;
+    }
+
+    const receiptId = receiptDataUrl ? ('p_' + Date.now()) : '';
+    const saveReceiptPromise = receiptDataUrl ? saveReceipt(receiptId, receiptDataUrl) : Promise.resolve();
+
+    saveReceiptPromise.then(() => {
+      purchaseItems.push({ date, name, qty, price, unit, note, receiptId });
+      localStorage.setItem('namSorPurchaseItems', JSON.stringify(purchaseItems));
+      
+      document.getElementById('pName').value = '';
+      document.getElementById('pQty').value = '1';
+      document.getElementById('pPrice').value = '0';
+      document.getElementById('pUnit').value = '';
+      document.getElementById('pNote').value = '';
+      clearReceipt('pReceiptInput','pReceiptPreview','pReceiptWrap');
+      calcInlineTotal();
+      renderPurchaseTable();
+      showToast('✅ ເພີ່ມລາຍການຊື້ເຄື່ອງສຳເລັດ');
+    });
+}
+
+function deletePurchaseItem(index) {
+    if (confirm('❌ ທ່ານຕ້ອງການລຶບລາຍການຊື້ເຄື່ອງນີ້ແທ້ຫຼືບໍ່?')) {
+        const rid = purchaseItems[index] && purchaseItems[index].receiptId;
+        if (rid) deleteReceipt(rid);
+        purchaseItems.splice(index, 1);
+        localStorage.setItem('namSorPurchaseItems', JSON.stringify(purchaseItems));
+        renderPurchaseTable();
+        showToast('🗑️ ລຶບລາຍການແລ້ວ');
+    }
+}
+
+
+// ===== CORE LOGIC (ບັນຊີລາຍຮັບ-ລາຍຈ່າຍ) =====
+function recalc() {
+  if (!Array.isArray(db)) db = [];
+  db.sort((a,b) => new Date(a.date) - new Date(b.date));
+  let bal = 0;
+  db.forEach(item => {
+    const inc = parseFloat(item.income) || 0;
+    const exp = parseFloat(item.expense) || 0;
+    bal = bal + inc - exp;
+    item.balance = bal;
+  });
+  save();
+}
+
+function openingBal(year, month) {
+  let b = 0;
+  db.forEach(item => {
+    const d = new Date(item.date), y = d.getFullYear(), m = d.getMonth()+1;
+    if (y < year || (y == year && m < month)) b += (parseFloat(item.income)||0) - (parseFloat(item.expense)||0);
+  });
+  return b;
+}
+
+function totalBal() {
+  return db.reduce((s,i) => s + (parseFloat(i.income)||0) - (parseFloat(i.expense)||0), 0);
+}
+
+// ===== BAR CHART =====
+function renderBarChart(year) {
+  const maxH = 140;
+  let maxV = 0;
+  const data = Array.from({length:12},(_,i)=>{
+    const m = i+1;
+    let inc=0, exp=0;
+    db.forEach(item=>{
+      const d=new Date(item.date);
+      if(d.getFullYear()==year && d.getMonth()+1==m){
+        inc+=parseFloat(item.income)||0; exp+=parseFloat(item.expense)||0;
+      }
+    });
+    maxV=Math.max(maxV,inc,exp);
+    return {m,inc,exp};
+  });
+  if(maxV===0) maxV=1;
+  const MNS = ["ມ.ກ","ກ.ພ","ມ.ນ","ມ.ສ","ພ.ສ","ມ.ຖ","ກ.ກ","ສ.ຫ","ກ.ຍ","ຕ.ລ","ພ.ຈ","ທ.ວ"];
+  document.getElementById('barChart').innerHTML = data.map(d=>{
+    const ih = Math.max(2, Math.round(d.inc/maxV*maxH));
+    const eh = Math.max(2, Math.round(d.exp/maxV*maxH));
+    return `<div class="bar-group">
+      <div class="bar-pair">
+        <div class="bar-inc" style="height:${ih}px;width:50%;" title="${MNS[d.m-1]} ລາຍຮັບ: ${fmtAbs(d.inc)}"></div>
+        <div class="bar-exp" style="height:${eh}px;width:50%;" title="${MNS[d.m-1]} ລາຍຈ່າຍ: ${fmtAbs(d.exp)}"></div>
+      </div>
+      <div class="bar-lbl">${MNS[d.m-1]}</div>
+    </div>`;
+  }).join('');
+}
+
+// ===== DASHBOARD =====
+function updateDash() {
+  recalc();
+  const t = new Date(), cy = t.getFullYear(), cm = t.getMonth()+1;
+  const md = db.filter(i => { const d=new Date(i.date); return d.getFullYear()==cy && d.getMonth()+1==cm; });
+  const inc = md.reduce((s,i) => s+(parseFloat(i.income)||0), 0);
+  const exp = md.reduce((s,i) => s+(parseFloat(i.expense)||0), 0);
+  const net = inc - exp;
+  const all = totalBal();
+
+  document.getElementById('dashInc').textContent = fmt(inc);
+  document.getElementById('dashIncCnt').textContent = md.filter(i=>i.income>0).length + ' ລາຍການ';
+  document.getElementById('dashExp').textContent = fmtAbs(exp);
+  document.getElementById('dashExpCnt').textContent = md.filter(i=>i.expense>0).length + ' ລາຍການ';
+  
+  const ne = document.getElementById('dashNet');
+  ne.textContent = fmt(net);
+  ne.className = 'stat-val ' + (net>=0?'g':'r');
+  document.getElementById('dashNetLbl').textContent = net>=0 ? '✅ ກຳໄລ' : '⚠️ ຂາດທຶນ';
+
+  const ae = document.getElementById('dashAll');
+  ae.textContent = fmt(all);
+  ae.className = 'stat-val ' + (all>=0?'b':'r');
+  document.getElementById('dashMonth').textContent = MN[cm-1] + ' ' + cy;
+
+  const tot = inc + exp || 1;
+  document.getElementById('incPct').textContent = Math.round(inc/tot*100)+'%';
+  document.getElementById('expPct').textContent = Math.round(exp/tot*100)+'%';
+  document.getElementById('incBar').style.width = Math.round(inc/tot*100)+'%';
+  document.getElementById('expBar').style.width = Math.round(exp/tot*100)+'%';
+
+  const recent = [...db].reverse().slice(0,8);
+  const ra = document.getElementById('dashRecent');
+  if (!recent.length) {
+    ra.innerHTML = '<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p>ຍັງບໍ່ມີລາຍການ<br>ໄປທີ່ "ບັນຊີລາຍການ" ເພື່ອເພີ່ມ</p></div>';
+  } else {
+    ra.innerHTML = recent.map(i => `<div class="act-item">
+      <div class="act-dot" style="background:${i.income>0?'var(--green)':'var(--red)'}"></div>
+      <div style="flex:1"><div class="act-desc">${i.desc}</div>
+      <div class="act-sub">${new Date(i.date).toLocaleDateString('en-GB')} &nbsp;
+        <span class="tag ${i.income>0?'tag-i':'tag-e'}">${i.income>0?'ຮັບ':'ຈ່າຍ'}</span></div></div>
+      <div class="act-amt" style="color:${i.income>0?'var(--green)':'var(--red)'}">${i.income>0?fmtAbs(i.income):fmtAbs(i.expense)}</div>
+    </div>`).join('');
+  }
+
+  const mons = new Set(db.map(i => { const d=new Date(i.date); return d.getFullYear()+'-'+d.getMonth(); }));
+  document.getElementById('st_total').textContent = db.length;
+  document.getElementById('st_months').textContent = mons.size > 0 ? mons.size+' ເດືອນ' : '-';
+  document.getElementById('st_avg').textContent = mons.size > 0 ? fmt(all/mons.size) : '-';
+
+  const chartYear = parseInt(document.getElementById('chartYear').value) || cy;
+  renderBarChart(chartYear);
+}
+
+// ===== ACCOUNTING =====
+function updateAcc() {
+  recalc();
+  const month = parseInt(document.getElementById('selMonth').value);
+  const year = parseInt(document.getElementById('selYear').value);
+  const q = document.getElementById('searchInp').value.toLowerCase();
+
+  document.getElementById('displayMonthYear').textContent = `📅 ເດືອນ: ${MN[month-1]} ${year}`;
+  document.getElementById('reportDate').textContent = new Date().toLocaleDateString('lo-LA');
+
+  const opening = openingBal(year, month);
+  let rows = db.filter(i => { const d=new Date(i.date); return d.getFullYear()==year && d.getMonth()+1==month; });
+  if (q) rows = rows.filter(i => i.desc.toLowerCase().includes(q) || (i.note||'').toLowerCase().includes(q));
+
+  let rb = opening;
+  document.getElementById('accBody').innerHTML = rows.length ? rows.map((item, idx) => {
+    const inc = parseFloat(item.income)||0;
+    const exp = parseFloat(item.expense)||0;
+    rb += inc - exp;
+    return `<tr>
+      <td class="col-no"><span class="excel-row-num">${idx+1}</span></td>
+      <td class="col-date">${new Date(item.date).toLocaleDateString('en-GB')}</td>
+      <td class="col-name">${item.desc}</td>
+      <td class="col-total" style="color:var(--green);">${inc>0?fmtAbs(inc):'-'}</td>
+      <td class="col-total" style="color:var(--red);">${exp>0?fmtAbs(exp):'-'}</td>
+      <td class="col-total ${rb>=0?'':'col-note'}">${fmt(rb)}</td>
+      <td style="text-align:center;">${item.receiptId ? '<img class="receipt-thumb" data-rid="'+item.receiptId+'" src="" style="cursor:pointer;width:36px;height:36px;object-fit:cover;border-radius:4px;border:1px solid var(--border);background:#fff;">' : '<span style="color:var(--txt3);font-size:11px;">-</span>'}</td>
+      <td class="col-note">${item.note||'<span style="color:var(--txt3)">-</span>'}</td>
+      <td class="print-hide" style="text-align:center;">
+        <button class="btn btn-o btn-sm" onclick="editTrans('${item.id}')">✏️</button>
+        <button class="btn btn-r btn-sm" onclick="delTrans('${item.id}')">🗑</button>
+      </td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--txt3);">ບໍ່ມີລາຍການໃນເດືອນນີ້</td></tr>';
+  setTimeout(loadTableReceipts, 80);
+
+  const sInc = rows.reduce((s,i)=>s+(parseFloat(i.income)||0),0);
+  const sExp = rows.reduce((s,i)=>s+(parseFloat(i.expense)||0),0);
+  const net = sInc - sExp;
+  const endBal = opening + net;
+  const allBal = totalBal();
+
+  document.getElementById('sumInc').textContent = fmtAbs(sInc);
+  document.getElementById('sumExp').textContent = fmtAbs(sExp);
+  const sn = document.getElementById('sumNet');
+  sn.textContent = fmt(net);
+  sn.className = 'num ' + (net>=0?'inc':'exp');
+
+  const ob = document.getElementById('openBal');
+  ob.textContent = fmt(opening);
+  ob.className = 'stat-val ' + (opening>=0?'':'r');
+  ob.style.fontSize = '18px';
+  const obh = document.getElementById('openBalHint');
+  if (obh) obh.textContent = opening===0 ? 'ຍອດເລີ່ມຕົ້ນ' : (opening>0?'ຍອດໂກຍ':'ຍອດຕິດລົບ');
+
+  const eb = document.getElementById('endBal');
+  eb.textContent = fmt(endBal);
+  eb.className = 'stat-val ' + (endBal>=0?'g':'r');
+  eb.style.fontSize = '18px';
+
+  const ab = document.getElementById('allBal');
+  ab.textContent = fmt(allBal);
+  ab.className = 'stat-val ' + (allBal>=0?'b':'r');
+  ab.style.fontSize = '18px';
+}
+
+// ===== CSV EXPORT =====
+function exportCSV() {
+  const month = parseInt(document.getElementById('selMonth').value);
+  const year = parseInt(document.getElementById('selYear').value);
+  let rows = db.filter(i => { const d=new Date(i.date); return d.getFullYear()==year && d.getMonth()+1==month; });
+  const opening = openingBal(year, month);
+  let rb = opening;
+  const lines = ['\uFEFF' + 'ລ/ດ,ວັນທີ,ເນື້ອໃນ,ລາຍຮັບ(₭),ລາຍຈ່າຍ(₭),ຍອດເຫຼືອ(₭),ໝາຍເຫດ'];
+  rows.forEach((item,idx)=>{
+    const inc = parseFloat(item.income)||0;
+    const exp = parseFloat(item.expense)||0;
+    rb += inc - exp;
+    lines.push(`${idx+1},${new Date(item.date).toLocaleDateString('en-GB')},"${item.desc}",${inc||''},${exp||''},${rb},"${item.note||''}"`);
+  });
+  const total_inc = rows.reduce((s,i)=>s+(parseFloat(i.income)||0),0);
+  const total_exp = rows.reduce((s,i)=>s+(parseFloat(i.expense)||0),0);
+  lines.push(`,,ລວມ,${total_inc},${total_exp},${opening+total_inc-total_exp},`);
+  const blob = new Blob([lines.join('\n')], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `acc_${MN[month-1]}_${year}.csv`;
+  a.click();
+  showToast('✅ Export CSV ສຳເລັດ');
+}
+
+function exportAnnualCSV() {
+  const year = parseInt(document.getElementById('aYear').value);
+  let cumul = openingBal(year, 1);
+  const lines = ['\uFEFF' + 'ເດືອນ,ລາຍຮັບ(₭),ລາຍຈ່າຍ(₭),ສຸດທິ(₭),ຍອດໂກຍ(₭)'];
+  let totInc=0, totExp=0;
+  Array.from({length:12},(_,i)=>{
+    const m=i+1;
+    let inc=0, exp=0;
+    db.forEach(item=>{
+      const d=new Date(item.date);
+      if(d.getFullYear()==year && d.getMonth()+1==m){
+        inc+=parseFloat(item.income)||0; exp+=parseFloat(item.expense)||0;
+      }
+    });
+    cumul+=inc-exp; totInc+=inc; totExp+=exp;
+    lines.push(`${MN[m-1]},${inc},${exp},${inc-exp},${cumul}`);
+  });
+  lines.push(`ລວມ,${totInc},${totExp},${totInc-totExp},`);
+  const blob = new Blob([lines.join('\n')], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `annual_${year}.csv`;
+  a.click();
+  showToast('✅ Export CSV ປີ '+year+' ສຳເລັດ');
+}
+
+// ===== MODAL =====
+function openAdd() {
+  clearReceipt('tReceiptInput','tReceiptPreview','tReceiptWrap');
+  document.getElementById('modalTitle').textContent = 'ເພີ່ມລາຍການໃໝ່';
+  document.getElementById('tid').value = '';
+  document.getElementById('tDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('tDesc').value = '';
+  document.getElementById('tType').value = 'income';
+  document.getElementById('tAmt').value = '';
+  document.getElementById('tNote').value = '';
+  document.getElementById('modal').classList.add('active');
+}
+function closeModal() { document.getElementById('modal').classList.remove('active'); }
+
+function saveTrans() {
+  const id = document.getElementById('tid').value || Date.now().toString();
+  const date = document.getElementById('tDate').value;
+  const desc = document.getElementById('tDesc').value.trim();
+  const type = document.getElementById('tType').value;
+  const amt = parseFloat(document.getElementById('tAmt').value);
+  const note = document.getElementById('tNote').value.trim();
+  const tPrev = document.getElementById('tReceiptPreview');
+  const newReceiptDataUrl = tPrev && tPrev.src.startsWith('data:') ? tPrev.src : null;
+  const existingItem = db.find(i => i.id === document.getElementById('tid').value) || {};
+  const existingReceiptId = existingItem.receiptId || '';
+  
+  if (!date || !desc || isNaN(amt) || amt <= 0) {
+    alert('⚠️ ກະລຸນາປ້ອນຂໍ້ມູນໃຫ້ຄົບ ແລະ ຈຳນວນ > 0');
+    return;
+  }
+  
+  const income = type==='income' ? amt : 0;
+  const expense = type==='expense' ? amt : 0;
+  const receiptId = newReceiptDataUrl ? ('t_' + Date.now()) : existingReceiptId;
+  const saveRcp = newReceiptDataUrl ? saveReceipt(receiptId, newReceiptDataUrl) : Promise.resolve();
+  
+  saveRcp.then(() => {
+    const idx = db.findIndex(i => i.id===id);
+    if (idx>=0) db[idx] = {id,date,desc,income,expense,balance:0,note,receiptId};
+    else db.push({id,date,desc,income,expense,balance:0,note,receiptId});
+    save(); closeModal(); updateAcc();
+    showToast(idx>=0 ? '✅ ແກ້ໄຂລາຍການສຳເລັດ' : '✅ ບັນທຶກລາຍການໃໝ່ສຳເລັດ');
+  });
+}
+
+function editTrans(id) {
+  const item = db.find(i => i.id===id);
+  if (!item) return;
+  document.getElementById('modalTitle').textContent = 'ແກ້ໄຂລາຍການ';
+  document.getElementById('tid').value = item.id;
+  document.getElementById('tDate').value = item.date;
+  document.getElementById('tDesc').value = item.desc;
+  document.getElementById('tType').value = item.income>0?'income':'expense';
+  document.getElementById('tAmt').value = item.income>0?item.income:item.expense;
+  document.getElementById('tNote').value = item.note||'';
+  const tW = document.getElementById('tReceiptWrap');
+  const tP = document.getElementById('tReceiptPreview');
+  tP.src = ''; tW.classList.remove('has-img');
+  
+  if (item.receiptId) {
+    getReceipt(item.receiptId).then(dataUrl => {
+      if (dataUrl) { tP.src = dataUrl; tW.classList.add('has-img'); }
+    });
+  }
+  document.getElementById('modal').classList.add('active');
+}
+
+function delTrans(id) {
+  if (confirm('⚠️ ຢືນຢັນການລຶບ?')) {
+    const item = db.find(i => i.id===id);
+    if (item && item.receiptId) deleteReceipt(item.receiptId);
+    db = db.filter(i => i.id!==id);
+    save(); 
+    updateAcc();
+    showToast('🗑 ລຶບລາຍການແລ້ວ');
+  }
+}
+
+// ===== QUARTERLY =====
+function updateQ() {
+  recalc();
+  const year = parseInt(document.getElementById('qYear').value);
+  document.getElementById('qCards').innerHTML = QS.map(q => {
+    let inc=0, exp=0;
+    q.m.forEach(m => db.forEach(item => {
+      const d=new Date(item.date);
+      if (d.getFullYear()==year && d.getMonth()+1==m) {
+        inc += parseFloat(item.income)||0;
+        exp += parseFloat(item.expense)||0;
+      }
+    }));
+    const net = inc - exp;
+    return `<div class="q-card">
+      <div class="q-card-head">
+        <span class="q-card-title">${q.n} — ${year}</span>
+        <span class="qb ${q.c}">${MN[q.m[0]-1]} - ${MN[q.m[2]-1]}</span>
+      </div>
+      <div class="q-row"><span class="q-row-lbl">💰 ລາຍຮັບ</span><span class="q-row-val" style="color:var(--green)">${fmtAbs(inc)}</span></div>
+      <div class="q-row"><span class="q-row-lbl">💸 ລາຍຈ່າຍ</span><span class="q-row-val" style="color:var(--red)">${fmtAbs(exp)}</span></div>
+      <div class="q-div"></div>
+      <div class="q-net"><span>ສຸດທິ</span><span style="color:${net>=0?'var(--green)':'var(--red)'}">${fmt(net)}</span></div>
+    </div>`;
+  }).join('');
+
+  let rows = '';
+  QS.forEach(q => q.m.forEach(m => {
+    let inc=0, exp=0;
+    db.forEach(item => {
+      const d=new Date(item.date);
+      if (d.getFullYear()==year && d.getMonth()+1==m) {
+        inc += parseFloat(item.income)||0;
+        exp += parseFloat(item.expense)||0;
+      }
+    });
+    const net = inc - exp;
+    rows += `<tr>
+      <td><span class="qb ${q.c}">${q.n}</span></td>
+      <td>${MN[m-1]}</td>
+      <td style="text-align:right;" class="num inc">${inc>0?fmtAbs(inc):'-'}</td>
+      <td style="text-align:right;" class="num exp">${exp>0?fmtAbs(exp):'-'}</td>
+      <td style="text-align:right;" class="num ${net>=0?'pos':'neg'}">${fmt(net)}</td>
+    </tr>`;
+  }));
+  document.getElementById('qDetail').innerHTML = rows || '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--txt3);">ບໍ່ມີຂໍ້ມູນ</td></tr>';
+}
+
+// ===== ANNUAL =====
+function updateA() {
+  recalc();
+  const year = parseInt(document.getElementById('aYear').value);
+  let totInc=0, totExp=0;
+  let cumul = openingBal(year, 1);
+  const maxVals = [];
+
+  const monthRows = Array.from({length:12}, (_,i) => {
+    const m = i+1;
+    let inc=0, exp=0;
+    db.forEach(item => {
+      const d=new Date(item.date);
+      if (d.getFullYear()==year && d.getMonth()+1==m) {
+        inc+=parseFloat(item.income)||0; exp+=parseFloat(item.expense)||0;
+      }
+    });
+    cumul += inc - exp;
+    totInc+=inc; totExp+=exp;
+    maxVals.push(Math.max(inc,exp));
+    return {m,inc,exp,net:inc-exp,cumul};
+  });
+
+  const maxV = Math.max(...maxVals, 1);
+  document.getElementById('aStats').innerHTML = `
+    <div class="stat-card"><div class="stat-lbl">ລາຍຮັບລວມ ${year}</div><div class="stat-val g">${fmt(totInc)}</div></div>
+    <div class="stat-card"><div class="stat-lbl">ລາຍຈ່າຍລວມ ${year}</div><div class="stat-val r">${fmtAbs(totExp)}</div></div>
+    <div class="stat-card"><div class="stat-lbl">ສຸດທິ ${year}</div><div class="stat-val ${(totInc-totExp)>=0?'g':'r'}">${fmt(totInc-totExp)}</div></div>`;
+
+  document.getElementById('aBody').innerHTML = monthRows.map(d => {
+    const iP = Math.round(d.inc/maxV*100), eP = Math.round(d.exp/maxV*100);
+    return `<tr>
+      <td>${MN[d.m-1]}</td>
+      <td style="text-align:right;" class="num inc">${d.inc>0?fmtAbs(d.inc):'-'}</td>
+      <td style="text-align:right;" class="num exp">${d.exp>0?fmtAbs(d.exp):'-'}</td>
+      <td style="text-align:right;" class="num ${d.net>=0?'pos':'neg'}">${fmt(d.net)}</td>
+      <td style="text-align:right;" class="num ${d.cumul>=0?'pos':'neg'}">${fmt(d.cumul)}</td>
+      <td><div style="display:flex;flex-direction:column;gap:2px;">
+        <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;"><div style="height:100%;width:${iP}%;background:var(--green);border-radius:2px;"></div></div>
+        <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;"><div style="height:100%;width:${eP}%;background:var(--red);border-radius:2px;"></div></div>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+// ===== SETTINGS =====
+function updateSett() {
+  const sz = new Blob([JSON.stringify(db)]).size;
+  document.getElementById('settInfo').textContent = `ລາຍການທັງໝົດ: ${db.length} · ຂະໜາດ: ${(sz/1024).toFixed(2)} KB`;
+}
+function exportData() {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));
+  a.download = 'acc_'+new Date().toISOString().split('T')[0]+'.json';
+  a.click();
+  showToast('✅ Export JSON ສຳເລັດ');
+}
+function importData(inp) {
+  const f = inp.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    try {
+      const d = JSON.parse(e.target.result);
+      if (!Array.isArray(d)) { alert('ຂໍ້ມູນຜິດຮູບແບບ'); return; }
+      if (confirm(`ນຳເຂົ້າ ${d.length} ລາຍການ? ຂໍ້ມູນເກົ່າຈະຖືກທົດແທນ`)) {
+        db = d; save(); showToast('✅ ນຳເຂົ້າ '+d.length+' ລາຍການສຳເລັດ'); updateSett();
+      }
+    } catch { alert('ໄຟລ໌ JSON ຜິດຮູບແບບ'); }
+  };
+  r.readAsText(f); inp.value='';
+}
+function clearAll() {
+  if (confirm('⚠️ ລຶບຂໍ້ມູນທັງໝົດ? ການກະທຳນີ້ຈະຖາວອນ!')) {
+    db=[]; save(); showToast('🗑 ລຶບຂໍ້ມູນທັງໝົດແລ້ວ'); updateSett();
+  }
+}
+
+// ===== SIGNATURE SYSTEM =====
+const SIG_ROLES = ['ຜູ້ອຳນວຍການ','ຫົວໜ້າເຂື່ອນ','ບັນຊີ-ການເງິນ','ຜູ້ສະຫຼຸບ'];
+
+function getSigMonthKey() {
+  const sel = document.getElementById('selMonth');
+  const yr = document.getElementById('selYear') || document.getElementById('accYear');
+  const month = sel ? sel.value.padStart(2,'0') : String(new Date().getMonth()+1).padStart(2,'0');
+  const year = yr ? yr.value : new Date().getFullYear();
+  return year + '_' + month;
+}
+function sigKey(role) { return getSigMonthKey() + '_' + role; }
+function roleKey(r) { return r.replace(/[^a-zA-Z0-9]/g,'_'); }
+
+function renderSigSection() {
+  const sec = document.getElementById('sigSection');
+  if (!sec) return;
+  sec.innerHTML = SIG_ROLES.map(role => {
+    const k = roleKey(role);
+    const s = sigData[sigKey(role)] || {};
+    const approved = !!(s.approved && s.dataUrl);
+    return `<div class="sig-box">
+      <div class="sig-lbl">${role}</div>
+      <div class="sig-canvas-wrap ${approved?'signed':''}" id="sigwrap_${k}">
+        <canvas id="sigcanvas_${k}" width="200" height="80"></canvas>
+        ${!approved ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--txt3);">ຍັງບໍ່ເຊັນ</div>' : ''}
+      </div>
+      <div class="sig-actions print-hide">
+        ${approved
+          ? `<button class="sig-btn approve" onclick="openSigModal('${role}')">✅ ເຊັນແລ້ວ — ແກ້ໄຂ</button> <button class="sig-btn clear-s" onclick="clearSig('${role}')">ລຶບ</button>`
+          : `<button class="sig-btn approve" onclick="openSigModal('${role}')">✍️ ອະນຸຍາດ / ເຊັນ</button>`
+        }
+      </div>
+      <input class="sig-name-input print-hide" type="text" placeholder="ຊື່ ແລະ ນາມສະກຸນ..."
+        value="${s.name||''}"
+        onchange="updateSigName('${role}', this.value)">
+      ${approved ? '<div class="sig-approved-badge">✅ ອະນຸຍາດ '+s.ts+'</div>' : ''}
+    </div>`;
+  }).join('');
+  
+  SIG_ROLES.forEach(role => {
+    const s = sigData[sigKey(role)] || {};
+    if (s.dataUrl) paintSig(role, s.dataUrl);
+  });
+}
+
+function paintSig(role, dataUrl) {
+  const k = roleKey(role);
+  const canvas = document.getElementById('sigcanvas_'+k);
+  if (!canvas) return;
+  const img = new Image();
+  img.onload = () => {
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.drawImage(img,0,0,canvas.width,canvas.height);
+  };
+  img.src = dataUrl;
+}
+
+function updateSigName(role, name) {
+  const sk = sigKey(role);
+  if (!sigData[sk]) sigData[sk] = {};
+  sigData[sk].name = name;
+  saveSigs();
+}
+
+function clearSig(role) {
+  if (!confirm('ລຶບລາຍເຊັນຂອງ ' + role + '?')) return;
+  delete sigData[sigKey(role)];
+  saveSigs();
+  renderSigSection();
+}
+
+let sigModalRole = null;
+let sigDrawing = false;
+let sigModalIsBudget = false;
+
+function openSigModal(role, isBudget) {
+  sigModalRole = role;
+  sigModalIsBudget = !!isBudget;
+  let m = document.getElementById('sig-draw-modal');
+  if (!m) {
+    m = document.createElement('div');
+    m.id = 'sig-draw-modal';
+    m.className = 'modal-ov';
+    m.innerHTML = `<div class="modal" style="max-width:520px;">
+      <div class="modal-head">
+        <h3 id="sigModalTitle">ເຊັນອະນຸຍາດ</h3>
+        <button class="modal-close" onclick="closeSigModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:12px;color:var(--txt2);margin-bottom:10px;">ຂຽນລາຍເຊັນໃສ່ກ່ອງຂ້າງລຸ່ມ (ໃຊ້ mouse ຫຼື touch)</p>
+        <div style="border:2px solid var(--border);border-radius:var(--r);background:#fff;overflow:hidden;">
+          <canvas id="sigDrawCanvas" width="480" height="160" style="width:100%;height:160px;display:block;touch-action:none;cursor:crosshair;"></canvas>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:14px;justify-content:flex-end;">
+          <button class="btn btn-o btn-sm" onclick="clearDrawCanvas()">🗑 ລຶບ ແລ້ວ ເຊັນໃໝ່</button>
+          <button class="btn btn-o" onclick="closeSigModal()">ຍົກເລີກ</button>
+          <button class="btn btn-g" onclick="approveSig()">✅ ຢືນຢັນ ອະນຸຍາດ</button>
+        </div>
+      </div>
+    </div>`;
+    document.body.appendChild(m);
+    initDrawCanvas();
+  }
+  document.getElementById('sigModalTitle').textContent = '✍️ ' + role;
+  const dc = document.getElementById('sigDrawCanvas');
+  const ctx = dc.getContext('2d');
+  ctx.clearRect(0,0,dc.width,dc.height);
+  const s = sigData[sigKey(role)] || {};
+  if (s.dataUrl) {
+    const img = new Image();
+    img.onload = () => ctx.drawImage(img,0,0,dc.width,dc.height);
+    img.src = s.dataUrl;
+  }
+  m.classList.add('active');
+}
+
+function closeSigModal() {
+  const m = document.getElementById('sig-draw-modal');
+  if (m) m.classList.remove('active');
+}
+
+function clearDrawCanvas() {
+  const dc = document.getElementById('sigDrawCanvas');
+  if (dc) dc.getContext('2d').clearRect(0,0,dc.width,dc.height);
+}
+
+function initDrawCanvas() {
+  const dc = document.getElementById('sigDrawCanvas');
+  const ctx = dc.getContext('2d');
+  ctx.strokeStyle = '#111827';
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  function pos(e) {
+    const r = dc.getBoundingClientRect();
+    const sx = dc.width/r.width, sy = dc.height/r.height;
+    if (e.touches) return { x:(e.touches[0].clientX-r.left)*sx, y:(e.touches[0].clientY-r.top)*sy };
+    return { x:(e.clientX-r.left)*sx, y:(e.clientY-r.top)*sy };
+  }
+  dc.addEventListener('mousedown',e=>{sigDrawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);});
+  dc.addEventListener('mousemove',e=>{if(!sigDrawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke();});
+  dc.addEventListener('mouseup',()=>sigDrawing=false);
+  dc.addEventListener('mouseleave',()=>sigDrawing=false);
+  dc.addEventListener('touchstart',e=>{e.preventDefault();sigDrawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);},{passive:false});
+  dc.addEventListener('touchmove',e=>{e.preventDefault();if(!sigDrawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke();},{passive:false});
+  dc.addEventListener('touchend',()=>sigDrawing=false);
+}
+
+function approveSig() {
+  const dc = document.getElementById('sigDrawCanvas');
+  const ctx = dc.getContext('2d');
+  const d = ctx.getImageData(0,0,dc.width,dc.height).data;
+  const hasContent = Array.from(d).some((v,i)=>i%4===3&&v>10);
+  if (!hasContent) { alert('⚠️ ກະລຸນາຂຽນລາຍເຊັນກ່ອນ'); return; }
+  const now = new Date().toLocaleDateString('lo-LA');
+  const sk2 = sigModalIsBudget ? getBudgetSigKey(sigModalRole) : sigKey(sigModalRole);
+  if (!sigData[sk2]) sigData[sk2] = {};
+  sigData[sk2].dataUrl = dc.toDataURL('image/png');
+  sigData[sk2].approved = true;
+  sigData[sk2].ts = now;
+  saveSigs();
+  closeSigModal();
+  if (sigModalIsBudget) renderBudgetSig(); else renderSigSection();
+  showToast('✅ ເຊັນອະນຸຍາດສຳເລັດ');
+}
+
+function comingSoon(name) {
+  showToast('⏳ ' + name + ' — ກຳລັງພັດທະນາ...');
+}
+
+function buildYears(id, def) {
+  const el = document.getElementById(id); if(!el) return;
+  const cy = new Date().getFullYear();
+  for (let y=cy-4; y<=cy+2; y++) {
+    const o = document.createElement('option');
+    o.value=y; o.textContent=y; if(y===def) o.selected=true;
+    el.appendChild(o);
+  }
+}
+
+window.onload = () => {
+  const t = new Date();
+  const cm = String(t.getMonth()+1).padStart(2,'0'), cy = t.getFullYear();
+  document.getElementById('selMonth').value = cm;
+  buildYears('selYear', cy);
+  buildYears('qYear', cy);
+  buildYears('aYear', cy);
+  buildYears('chartYear', cy);
+  document.getElementById('hDate').textContent = t.toLocaleDateString('lo-LA',{weekday:'short',year:'numeric',month:'long',day:'numeric'});
+
+  if(document.getElementById('pDate')) {
+      document.getElementById('pDate').value = t.toISOString().split('T')[0];
+  }
+
+  // ===== ປ້ອງກັນຂໍ້ມູນຫາຍ ແລະ ດຶງຂໍ້ມູນເກົ່າມາໃຊ້ຄັ້ງດຽວ (ແກ້ບັນຫາລົບແລ້ວກັບມາ) =====
+  if (!localStorage.getItem('v1_migrated')) {
+    if (db.length === 0) {
+      try { 
+        const old = localStorage.getItem('accountingData_v1'); 
+        if(old && old !== '[]'){
+          const parsedOld = JSON.parse(old);
+          if (Array.isArray(parsedOld) && parsedOld.length > 0) {
+            db = parsedOld;
+            save(); // ບັນທຶກລົງ acc_v2 ໃໝ່
+          }
+        } 
+      } catch(e){}
+    }
+    // ໝາຍໄວ້ວ່າໄດ້ທຳການກວດສອບ ແລະ ດຶງຂໍ້ມູນແລ້ວ
+    localStorage.setItem('v1_migrated', 'true');
+  }
+
+  const lastPage = sessionStorage.getItem('activePage') || 'dashboard';
+  go(lastPage);
+};
+</script>
+</body>
+</html>

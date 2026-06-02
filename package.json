@@ -1,0 +1,34 @@
+{
+  "name": "namsor-accounting-system",
+  "version": "3.1.0",
+  "description": "Full-stack accounting system for Nam Sor Hydropower Dam",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "setup": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
+    "start": "concurrently \"cd backend && npm start\" \"cd frontend && npm start\"",
+    "migrate": "cd backend && npm run migrate",
+    "build": "echo 'Backend and frontend built separately'",
+    "docker": "docker-compose up -d",
+    "docker:down": "docker-compose down"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "keywords": [
+    "accounting",
+    "hydropower",
+    "lao",
+    "erp",
+    "finance"
+  ],
+  "author": "Nam Sor Hydropower Dam",
+  "license": "MIT",
+  "engines": {
+    "node": "16.x || 18.x || 20.x"
+  }
+}

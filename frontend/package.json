@@ -1,0 +1,13 @@
+{
+  "name": "namsor-accounting-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for Namsor Hydropower Accounting System",
+  "scripts": {
+    "dev": "python -m http.server 3000",
+    "start": "python -m http.server 8000",
+    "build": "echo 'No build needed for static frontend'"
+  },
+  "engines": {
+    "node": "16.x"
+  }
+}

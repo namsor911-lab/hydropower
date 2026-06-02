@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: namsor-backend
+    runtime: node
+    plan: free
+    buildCommand: "cd backend && npm ci && npm run migrate"
+    startCommand: "cd backend && npm run start"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "5000"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: https://${RENDER_EXTERNAL_HOSTNAME}
+      - key: DATABASE_URL
+        value: /var/data/namsor.db
+    disk:
+      name: database
+      mountPath: /var/data
+      sizeGB: 1
+
+  - type: static_site
+    name: namsor-frontend
+    buildCommand: "echo 'Static files ready'"
+    staticPublicPath: ./frontend
+    routes:
+      - path: /
+        destination: /login.html
+      - path: /*
+        destination: /index.html
+
+env:
+  - key: RENDER_EXTERNAL_HOSTNAME
+    scope: runtime

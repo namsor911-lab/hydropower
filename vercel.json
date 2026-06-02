@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "buildCommand": "cd backend && npm ci",
+  "outputDirectory": "backend/src",
+  "public": false,
+  "env": {
+    "NODE_ENV": "production",
+    "JWT_SECRET": "@jwt_secret",
+    "CORS_ORIGIN": "@cors_origin",
+    "DATABASE_URL": "@database_url"
+  },
+  "functions": {
+    "backend/src/server.js": {
+      "memory": 1024,
+      "maxDuration": 60,
+      "runtime": "nodejs18.x"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/backend/src/server.js"
+    },
+    {
+      "src": "^/(?!api).*",
+      "dest": "/frontend/$1"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: namsor-accounting-api
+    env: node
+    buildCommand: npm ci
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        scope: secret
+      - key: DATABASE_URL
+        value: ./database/namsor.db
+      - key: CORS_ORIGIN
+        value: https://namsor-accounting.onrender.com

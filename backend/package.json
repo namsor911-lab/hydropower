@@ -1,0 +1,38 @@
+{
+  "name": "namsor-accounting-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Namsor Hydropower Accounting System",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/setup-production.js && node src/server.js",
+    "dev": "nodemon src/server.js",
+    "migrate": "node src/database/init.js",
+    "deploy:railway": "bash deploy-railway.sh",
+    "deploy:render": "bash deploy-render.sh",
+    "deploy:vercel": "bash deploy-vercel.sh",
+    "setup:prod": "node src/setup-production.js",
+    "health": "curl http://localhost:5000/health"
+  },
+  "keywords": [
+    "accounting",
+    "hydropower",
+    "lao"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "jsonwebtoken": "^9.1.0",
+    "bcrypt": "^5.1.1",
+    "multer": "^1.4.5-lts.1",
+    "sharp": "^0.32.6",
+    "sqlite3": "^5.1.6",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
