@@ -1,205 +1,654 @@
 <!DOCTYPE html>
 <html lang="lo">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HR / Payroll — Namsor Hydropower</title>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root {
-      --bg: #0d1117;
-      --bg2: #161b22;
-      --bg3: #1c2128;
-      --border: #30363d;
-      --txt: #e6edf3;
-      --txt2: #8b949e;
-      --green: #3fb950;
-      --blue: #58a6ff;
-      --red: #f85149;
-      --r: 10px;
-      --font: 'IBM Plex Sans Thai', sans-serif;
-      --mono: 'IBM Plex Mono', monospace;
-    }
-    body { font-family: var(--font); background: var(--bg); color: var(--txt); min-height: 100vh; }
-    .page { max-width: 1320px; margin: 0 auto; padding: 18px; }
-    .topbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; margin-bottom: 18px; }
-    .topbar h1 { font-size: 20px; font-weight: 700; }
-    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; border-radius: 999px; font-weight: 600; font-size: 13px; cursor: pointer; border: 1px solid transparent; transition: all .2s ease; }
-    .btn-g { background: #238636; color: #fff; }
-    .btn-o { background: transparent; color: var(--txt2); border-color: var(--border); }
-    .btn-o:hover, .btn-g:hover { opacity: .92; }
-    .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; margin-bottom: 18px; }
-    .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 18px; }
-    .card-title { font-size: 13px; color: var(--txt2); margin-bottom: 12px; text-transform: uppercase; letter-spacing: .08em; }
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; }
-    th { color: var(--txt2); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; font-size: 12px; }
-    tr:hover td { background: rgba(63,185,80,.08); }
-    .status-pill { padding: 4px 10px; border-radius: 999px; font-size: 11px; display: inline-flex; align-items: center; }
-    .status-pill.active { background: rgba(63,185,80,.14); color: var(--green); }
-    .form-group { margin-bottom: 12px; }
-    label { display: block; margin-bottom: 6px; color: var(--txt2); font-size: 12px; }
-    input, select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg3); color: var(--txt); font-family: var(--font); font-size: 13px; }
-    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    .notice { margin-bottom: 14px; color: var(--txt2); font-size: 13px; }
-    @media(max-width:1000px){ .grid { grid-template-columns: 1fr; } }
-    @media(max-width:720px){ .form-grid { grid-template-columns: 1fr; } }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ຕາຕະລາງເງິນເດືອນ — Namsor Hydropower</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#1c2128;--bg4:#21262d;
+  --border:#30363d;--border2:#21262d;
+  --txt:#e6edf3;--txt2:#8b949e;--txt3:#484f58;
+  --green:#3fb950;--green-dim:rgba(63,185,80,0.12);
+  --red:#f85149;--red-dim:rgba(248,81,73,0.12);
+  --blue:#58a6ff;--blue-dim:rgba(88,166,255,0.12);
+  --yellow:#e3b341;--yellow-dim:rgba(227,179,65,0.12);
+  --accent:#238636;
+  --r:6px;--r2:10px;
+  --font:'IBM Plex Sans Thai',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--txt);min-height:100vh;font-size:14px}
+
+/* TOP BAR */
+.top-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 20px;height:54px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:var(--r);background:var(--bg3);border:1px solid var(--border);color:var(--txt2);font-size:13px;font-family:var(--font);cursor:pointer;text-decoration:none;transition:all .15s}
+.back-btn:hover{color:var(--txt);border-color:var(--txt3)}
+.top-title{font-size:15px;font-weight:700;flex:1}
+.top-date{font-size:12px;color:var(--txt3);font-family:var(--mono)}
+
+/* PAGE */
+.content{padding:20px;max-width:1920px;margin:0 auto}
+
+/* BANNER */
+.banner{background:linear-gradient(135deg,#1d6a2e 0%,#238636 60%,#2ea043 100%);border-radius:var(--r2);padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:14px}
+.banner-icon{width:44px;height:44px;background:rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.banner-title{font-size:18px;font-weight:800;color:#fff;letter-spacing:.5px}
+.banner-sub{font-size:12px;color:rgba(255,255,255,0.75);margin-top:2px}
+
+/* CONTROLS */
+.ctrl-bar{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ctrl-label{font-size:13px;color:var(--txt2);font-weight:500}
+select.sel,input.sel-inp{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:6px 28px 6px 10px;color:var(--txt);font-family:var(--font);font-size:13px;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b949e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+select.sel:focus{outline:none;border-color:var(--blue)}
+.spacer{flex:1}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r);font-size:13px;font-weight:500;border:1px solid transparent;cursor:pointer;transition:all .15s;font-family:var(--font);white-space:nowrap}
+.btn svg{width:14px;height:14px}
+.btn-g{background:var(--accent);color:#fff;border-color:#2ea043}.btn-g:hover{background:#2ea043}
+.btn-b{background:#1f6feb;color:#fff;border-color:#388bfd}.btn-b:hover{background:#388bfd}
+.btn-o{background:transparent;color:var(--txt2);border-color:var(--border)}.btn-o:hover{color:var(--txt);background:var(--bg3);border-color:var(--txt3)}
+.btn-r{background:var(--red-dim);color:var(--red)}.btn-r:hover{background:rgba(248,81,73,0.22)}
+.btn-sm{padding:4px 9px;font-size:11px}
+
+/* SUMMARY */
+.sum-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:20px}
+.sum-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;text-align:center}
+.sum-lbl{font-size:11px;color:var(--txt2);margin-bottom:6px}
+.sum-val{font-size:17px;font-weight:700;font-family:var(--mono)}
+.sum-val.g{color:var(--green)}.sum-val.r{color:var(--red)}.sum-val.b{color:var(--blue)}.sum-val.y{color:var(--yellow)}
+
+/* TABLE CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:16px;overflow:hidden}
+.card-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.card-title{font-size:14px;font-weight:600}
+.hint{font-size:11px;color:var(--txt3)}
+
+/* PAYROLL TABLE */
+.tbl-wrap{overflow-x:auto}
+.ptbl{width:100%;border-collapse:collapse;font-size:11.5px;min-width:1900px}
+
+/* Header rows */
+.ptbl thead tr.grp th{background:linear-gradient(135deg,#1b4d6e,#1f6feb);color:#fff;font-size:10.5px;font-weight:700;text-align:center;padding:7px 8px;white-space:nowrap;border-right:1px solid rgba(255,255,255,0.15);border-bottom:1px solid rgba(255,255,255,0.2)}
+.ptbl thead tr.cols th{background:linear-gradient(135deg,#1d6a2e,#2ea043);color:#fff;font-size:10px;font-weight:700;text-align:center;padding:7px 8px;white-space:nowrap;border-right:1px solid rgba(255,255,255,0.15);border-bottom:2px solid #1a5c27;line-height:1.35}
+.ptbl thead tr.cols th:last-child{border-right:none}
+
+/* Body */
+.ptbl tbody tr:nth-child(even){background:rgba(255,255,255,0.02)}
+.ptbl tbody tr:hover td{background:rgba(63,185,80,0.06)!important}
+.ptbl tbody td{padding:6px 7px;border-bottom:1px solid var(--border2);border-right:1px solid rgba(255,255,255,0.035);vertical-align:middle}
+.ptbl tbody td:last-child{border-right:none}
+.ptbl tbody tr:last-child td{border-bottom:none}
+
+/* Footer */
+.ptbl tfoot tr{background:linear-gradient(90deg,rgba(35,134,54,.22),rgba(35,134,54,.1));border-top:2px solid var(--green)}
+.ptbl tfoot td{padding:8px 8px;font-weight:700;font-size:12px;border-right:1px solid rgba(255,255,255,0.04)}
+.ptbl tfoot td:last-child{border-right:none}
+
+/* Cell types */
+.c-no{text-align:center;color:var(--txt3);font-family:var(--mono);font-size:11px;width:34px}
+.c-name{min-width:140px;font-weight:500}
+.c-role{color:var(--txt2);min-width:110px;font-size:11px}
+.c-num{text-align:right;font-family:var(--mono)}
+.c-gross{text-align:right;font-family:var(--mono);font-weight:700;color:var(--green)}
+.c-deduct{text-align:right;font-family:var(--mono);color:var(--red)}
+.c-before{text-align:right;font-family:var(--mono);font-weight:700;color:var(--txt)}
+.c-tax5{text-align:right;font-family:var(--mono);color:var(--yellow)}
+.c-tax10{text-align:right;font-family:var(--mono);color:var(--yellow)}
+.c-taxamt{text-align:right;font-family:var(--mono);font-weight:700;color:var(--red)}
+.c-net{text-align:right;font-family:var(--mono);font-weight:700;color:var(--blue);font-size:12.5px}
+.c-sig{text-align:center;min-width:90px}
+.c-act{text-align:center;width:58px}
+
+/* Editable inputs */
+.ci{background:transparent;border:none;color:var(--txt);font-family:var(--mono);font-size:11.5px;text-align:right;width:100%;padding:0;outline:none;cursor:pointer}
+.ci:focus{background:var(--bg4);border-radius:3px;padding:2px 4px;outline:2px solid var(--blue);cursor:text}
+.ci-txt{background:transparent;border:none;color:var(--txt);font-family:var(--font);font-size:11.5px;width:100%;padding:0;outline:none}
+.ci-txt:focus{background:var(--bg4);border-radius:3px;padding:2px 4px;outline:2px solid var(--blue)}
+.ci-role{background:transparent;border:none;color:var(--txt2);font-family:var(--font);font-size:11px;width:100%;padding:0;outline:none}
+.ci-role:focus{background:var(--bg4);border-radius:3px;padding:2px 4px;outline:2px solid var(--blue)}
+
+/* Row num */
+.rn{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:4px;background:var(--bg4);border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--txt3)}
+
+/* Sig pad */
+.sig-cell{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px}
+.sig-canvas{border-radius:4px;border:1px dashed var(--border);background:rgba(255,255,255,0.03);cursor:crosshair;display:block}
+.sig-canvas.signed{border-color:var(--green);border-style:solid}
+.sig-btns{display:flex;gap:4px}
+.sig-btn{font-size:9px;padding:2px 5px;border-radius:3px;border:none;cursor:pointer;font-family:var(--font)}
+.sig-btn-clear{background:var(--red-dim);color:var(--red)}
+.sig-btn-save{background:var(--green-dim);color:var(--green)}
+
+/* Empty */
+.empty{text-align:center;padding:40px 20px;color:var(--txt3)}
+
+/* Footer totals */
+.ft-lbl{text-align:right;color:var(--txt2);font-size:11px}
+.ft-g{text-align:right;font-family:var(--mono);color:var(--green);font-size:12px}
+.ft-r{text-align:right;font-family:var(--mono);color:var(--red);font-size:12px}
+.ft-b{text-align:right;font-family:var(--mono);color:var(--blue);font-size:12px}
+.ft-y{text-align:right;font-family:var(--mono);color:var(--yellow);font-size:12px}
+
+/* Modal */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;align-items:center;justify-content:center}
+.ov.on{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);width:92%;max-width:560px;max-height:92vh;display:flex;flex-direction:column;animation:mIn .2s ease}
+@keyframes mIn{from{opacity:0;transform:scale(.96) translateY(-8px)}to{opacity:1;transform:none}}
+.mhd{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.mhd h3{font-size:14px;font-weight:600}
+.mcl{width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--txt2);cursor:pointer;font-size:14px}
+.mcl:hover{color:var(--txt)}
+.mbd{padding:16px;overflow-y:auto;flex:1}
+.mft{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px}
+.mft .btn{flex:1;justify-content:center}
+.fg{margin-bottom:12px}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fl{display:block;font-size:12px;color:var(--txt2);margin-bottom:5px;font-weight:500}
+.fc{width:100%;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--txt);font-family:var(--font);font-size:13px}
+.fc:focus{outline:none;border-color:var(--blue)}
+.sec-hd{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:12px}
+.sec-hd-lbl{font-size:12px;font-weight:600;color:var(--txt2);margin-bottom:10px}
+
+/* Preview box */
+.pvbox{background:var(--green-dim);border:1px solid rgba(63,185,80,.3);border-radius:var(--r);padding:12px}
+.pvbox-lbl{font-size:12px;font-weight:600;color:var(--green);margin-bottom:10px}
+.pvrow{display:grid;grid-template-columns:1fr auto;gap:4px;font-size:12px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.pvrow:last-child{border-bottom:none;padding-top:7px;margin-top:3px}
+.pvrow .lbl{color:var(--txt2)}
+.pvrow .val{font-family:var(--mono);font-weight:600;text-align:right}
+.pvrow.total .lbl{color:var(--txt);font-weight:700}
+.pvrow.total .val{color:var(--blue);font-size:14px}
+.pvrow.tax .val{color:var(--yellow)}
+.pvrow.deduct .val{color:var(--red)}
+
+/* Toast */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--bg4);border:1px solid var(--border);border-radius:var(--r2);padding:9px 18px;font-size:13px;z-index:999;transition:transform .25s cubic-bezier(.34,1.56,.64,1),opacity .25s;opacity:0;pointer-events:none}
+.toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* Print */
+@media print{
+  .top-bar,.ctrl-bar,.c-act,.toast,.ov,.sig-btns,.hint{display:none!important}
+  body{background:#fff;color:#000;font-size:10px}
+  .content{padding:0;max-width:100%}
+  .banner{background:#1d6a2e!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .card{border:1px solid #ccc}
+  .ptbl{font-size:9px;min-width:unset}
+  .ptbl thead tr.grp th{background:#1a4d6e!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .ptbl thead tr.cols th{background:#1d6a2e!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .ptbl tfoot tr{background:#e8f5e9!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .ci,.ci-txt,.ci-role{color:#000!important}
+  .c-gross{color:#1a7f37!important}.c-net{color:#1f6feb!important}.c-taxamt{color:#cf222e!important}
+  .sum-grid{display:none}
+  .sig-canvas{border:1px solid #999!important}
+}
+</style>
 </head>
 <body>
-  <div class="page">
-    <div class="topbar">
-      <div>
-        <h1>HR / Payroll</h1>
-        <p id="subtitle" style="color: var(--txt2); margin-top: 6px;">ຈັດການຂໍ້ມູນພະນັກງານ</p>
-      </div>
-      <div class="actions">
-        <button class="btn btn-o" onclick="location.href='/index.html'">Dashboard</button>
-        <button class="btn btn-o" id="btnRefresh">ອັບເດດ</button>
-        <button class="btn btn-g" id="btnLogout">ອອກລະບົບ</button>
-      </div>
-    </div>
 
-    <div class="grid">
-      <div class="card">
-        <div class="card-title">ພະນັກງານທັງໝົດ</div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>ຊື່</th>
-                <th>ຕຳແໜ່ງ</th>
-                <th>ພະແນກ</th>
-                <th>ເງິນເດືອນ</th>
-              </tr>
-            </thead>
-            <tbody id="employeeBody"></tbody>
-          </table>
-        </div>
-      </div>
+<div class="top-bar">
+  <a href="index.html" class="back-btn">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    ກັບຄືນ
+  </a>
+  <span class="top-title">💼 ລະບົບ HR — ຕາຕະລາງເງິນເດືອນ</span>
+  <div class="spacer"></div>
+  <span class="top-date" id="topDate"></span>
+</div>
 
-      <div class="card">
-        <div class="card-title">ເພີ່ມພະນັກງານໃໝ່</div>
-        <p class="notice">ຜູ້ໃຊ້ທີ່ມີສິດທິ admin ຫຼື accountant ສາມາດເພີ່ມຂໍ້ມູນໄດ້</p>
-        <form id="employeeForm">
-          <div class="form-grid">
-            <div class="form-group">
-              <label>ຊື່</label>
-              <input type="text" id="firstName" required />
-            </div>
-            <div class="form-group">
-              <label>ນາມສະກຸນ</label>
-              <input type="text" id="lastName" required />
-            </div>
-          </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label>ຕຳແໜ່ງ</label>
-              <input type="text" id="position" />
-            </div>
-            <div class="form-group">
-              <label>ພະແນກ</label>
-              <input type="text" id="department" />
-            </div>
-          </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label>ເງິນເດືອນ</label>
-              <input type="number" id="salary" min="0" step="1000" />
-            </div>
-            <div class="form-group">
-              <label>ວັນຈ່າຍງານ</label>
-              <input type="date" id="hireDate" />
-            </div>
-          </div>
-          <button class="btn btn-g" type="submit">ບັນທຶກ</button>
-        </form>
-      </div>
+<div class="content">
+
+  <div class="banner">
+    <div class="banner-icon">⚡</div>
+    <div>
+      <div class="banner-title">NAMSOR HYDROPOWER</div>
+      <div class="banner-sub">ຕາຕະລາງເງິນເດືອນພະນັກງານ — ເຂື່ອນໄຟຟ້ານ້ຳຊໍ້</div>
     </div>
   </div>
 
-  <script type="module">
-    import { Auth, Employees } from './js/api.js';
+  <!-- CONTROLS -->
+  <div class="ctrl-bar">
+    <span class="ctrl-label">ປະຈໍາເດືອນ:</span>
+    <select class="sel" id="selMonth"></select>
+    <select class="sel" id="selYear"></select>
+    <div class="spacer"></div>
+    <button class="btn btn-g" onclick="openAdd()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      ເພີ່ມພະນັກງານ
+    </button>
+    <button class="btn btn-b" onclick="window.print()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      ພິມ/PDF
+    </button>
+    <button class="btn btn-o" onclick="doExportCSV()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export
+    </button>
+  </div>
 
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
-    const token = localStorage.getItem('authToken');
+  <!-- SUMMARY -->
+  <div class="sum-grid">
+    <div class="sum-card"><div class="sum-lbl">👥 ຈຳນວນພະນັກງານ</div><div class="sum-val b" id="sCount">0 ຄົນ</div></div>
+    <div class="sum-card"><div class="sum-lbl">💰 ເງິນເດືອນທົ່ງໝົດ</div><div class="sum-val g" id="sGross">0 ₭</div></div>
+    <div class="sum-card"><div class="sum-lbl">📉 ຫັກ ມ.35 ລວມ</div><div class="sum-val r" id="sDeduct">0 ₭</div></div>
+    <div class="sum-card"><div class="sum-lbl">🧾 ຈຳນວນເງີນຍົກເວັ້ນອາກອນ</div><div class="sum-val" id="sBefore" style="color:var(--txt)">0 ₭</div></div>
+    <div class="sum-card"><div class="sum-lbl">🏛 ອາກອນລວມ</div><div class="sum-val r" id="sTax">0 ₭</div></div>
+    <div class="sum-card"><div class="sum-lbl">✅ ລາຍໄດ້ສຸດທິລວມ</div><div class="sum-val b" id="sNet">0 ₭</div></div>
+  </div>
 
-    const elements = {
-      subtitle: document.getElementById('subtitle'),
-      employeeBody: document.getElementById('employeeBody')
-    };
+  <!-- TABLE -->
+  <div class="card">
+    <div class="card-head">
+      <span class="card-title">📋 ຕາຕະລາງເງິນເດືອນ — <span id="tblLbl"></span></span>
+      <span class="hint">💡 ຄລິກຕົວເລກໃດກໍໄດ້ ເພື່ອແກ້ໄຂໂດຍກົງ</span>
+    </div>
+    <div class="tbl-wrap">
+      <table class="ptbl">
+        <thead>
+          <!-- GROUP ROW -->
+          <tr class="grp">
+            <th rowspan="2">No</th>
+            <th rowspan="2">ຊື່ນາມສະກຸນ</th>
+            <th rowspan="2">ໜ້າທີ່ຮັບຜິດຊອບ</th>
+            <th colspan="4">ລາຍຮັບ (₭)</th>
+            <th rowspan="2">ເງິນເດືອນ<br>ທົ່ງໝົດ</th>
+            <th rowspan="2">ເງີນເພີ່ມໂມງ ແລະ ຊ່ວງເວລາ<br>ທີ່ບໍ່ຄືກ ຫັກອາກອນ<br><span style="font-size:9px;opacity:.8">(ມຕ.35)</span></th>
+            <th rowspan="2">ຈຳນວນເງີນ<br>ຍົກເວັ້ນ<br>ອາກອນ</th>
+            <th colspan="2">Taxable</th>
+            <th rowspan="2">ຈຳນວນອາກອນ<br>ທີ່ຕ້ອງມອບ</th>
+            <th rowspan="2">ລາຍໄດ້<br>ສຸດທິ</th>
+            <th rowspan="2">ລາຍເຊັນ</th>
+            <th rowspan="2" class="no-print">ຈັດການ</th>
+          </tr>
+          <!-- COLUMN ROW -->
+          <tr class="cols">
+            <th>ເງິນເດືອນ<br>ພື້ນຖານ</th>
+            <th>ອັດຕາ<br>ກີນ</th>
+            <th>ເງີນເດີນ<br>ທາງ</th>
+            <th>ໂອທີ<br>ຕ່າງໆ</th>
+            <!-- gross, deduct, before, -->
+            <th>5%<br><span style="font-size:8.5px;opacity:.8">1,300,001–5,000,000</span></th>
+            <th>10%<br><span style="font-size:8.5px;opacity:.8">5,000,001–15,000,000</span></th>
+            <!-- tax, net, sig, act -->
+          </tr>
+        </thead>
+        <tbody id="ptBody">
+          <tr><td colspan="17" class="empty">ຍັງບໍ່ມີຂໍ້ມູນ — ກົດ "ເພີ່ມພະນັກງານ" ເພື່ອເລີ່ມ</td></tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" class="ft-lbl">ລວມທັງໝົດ</td>
+            <td id="ft1" class="ft-g"></td>
+            <td id="ft2" class="ft-g"></td>
+            <td id="ft3" class="ft-g"></td>
+            <td id="ft4" class="ft-g"></td>
+            <td id="ft5" class="ft-g"></td>
+            <td id="ft6" class="ft-r"></td>
+            <td id="ft7" class="ft-g"></td>
+            <td id="ft8" class="ft-y"></td>
+            <td id="ft9" class="ft-y"></td>
+            <td id="ft10" class="ft-r"></td>
+            <td id="ft11" class="ft-b"></td>
+            <td></td>
+            <td class="no-print"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div><!-- /content -->
 
-    const formatMoney = (value) => new Intl.NumberFormat('lo-LA').format(value || 0) + ' ₭';
+<!-- ADD/EDIT MODAL -->
+<div class="ov" id="empOv">
+  <div class="modal">
+    <div class="mhd">
+      <h3 id="mTitle">➕ ເພີ່ມພະນັກງານ</h3>
+      <span class="mcl" onclick="closeModal()">✕</span>
+    </div>
+    <div class="mbd">
+      <input type="hidden" id="eIdx">
 
-    const logout = () => {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('currentUser');
-      window.location.href = '/login.html';
-    };
+      <div class="fg2">
+        <div class="fg">
+          <label class="fl">ຊື່ ແລະ ນາມສະກຸນ *</label>
+          <input class="fc" id="eName" placeholder="ຊື່ ນາມສະກຸນ" type="text">
+        </div>
+        <div class="fg">
+          <label class="fl">ໜ້າທີ່ຮັບຜິດຊອບ</label>
+          <input class="fc" id="eRole" placeholder="ຕໍາແໜ່ງ/ໜ້າທີ່" type="text">
+        </div>
+      </div>
 
-    const showError = (message) => alert(message || 'ກະລຸນາລອງໃໝ່');
+      <div class="sec-hd">
+        <div class="sec-hd-lbl">💰 ລາຍຮັບ</div>
+        <div class="fg2">
+          <div class="fg">
+            <label class="fl">ເງິນເດືອນພື້ນຖານ (₭)</label>
+            <input class="fc" id="eBasic" placeholder="0" type="number" min="0" oninput="pvCalc()">
+          </div>
+          <div class="fg">
+            <label class="fl">ອັດຕາກີນ (₭)</label>
+            <input class="fc" id="eOt" placeholder="0" type="number" min="0" oninput="pvCalc()">
+          </div>
+        </div>
+        <div class="fg2">
+          <div class="fg">
+            <label class="fl">ເງີນເດີນທາງ (₭)</label>
+            <input class="fc" id="eLiving" placeholder="0" type="number" min="0" oninput="pvCalc()">
+          </div>
+          <div class="fg">
+            <label class="fl">ໂອທີຕ່າງໆ (₭)</label>
+            <input class="fc" id="eOther" placeholder="0" type="number" min="0" oninput="pvCalc()">
+          </div>
+        </div>
+      </div>
 
-    const loadEmployees = async () => {
-      if (!token || !currentUser) {
-        return logout();
-      }
+      <div class="sec-hd">
+        <div class="sec-hd-lbl">📉 ຫັກອອກ — ມຕ.35</div>
+        <div class="fg">
+          <label class="fl">ເງີນເພີ່ມໂມງ ແລະ ຊ່ວງເວລາທີ່ບໍ່ຄືກ ຫັກອາກອນ (₭)</label>
+          <input class="fc" id="eDeduct" placeholder="0" type="number" min="0" oninput="pvCalc()">
+        </div>
+      </div>
 
-      try {
-        const user = await Auth.getCurrentUser();
-        elements.subtitle.textContent = `${user.fullName} · ${user.role}`;
+      <!-- PREVIEW -->
+      <div class="pvbox">
+        <div class="pvbox-lbl">📊 ສະຫຼຸບການຄຳນວນ</div>
+        <div class="pvrow"><span class="lbl">ເງິນເດືອນທົ່ງໝົດ:</span><span class="val" id="pv1">0 ₭</span></div>
+        <div class="pvrow deduct"><span class="lbl">ຫັກ ມ.35:</span><span class="val" id="pv2">0 ₭</span></div>
+        <div class="pvrow"><span class="lbl">ຈຳນວນເງີນຍົກເວັ້ນອາກອນ:</span><span class="val" id="pv3">0 ₭</span></div>
+        <div class="pvrow tax"><span class="lbl">ອາກອນ 5% (ສ່ວນ 1.3M–5M):</span><span class="val" id="pv4">0 ₭</span></div>
+        <div class="pvrow tax"><span class="lbl">ອາກອນ 10% (ສ່ວນ 5M–15M):</span><span class="val" id="pv5">0 ₭</span></div>
+        <div class="pvrow tax"><span class="lbl">ອາກອນລວມ:</span><span class="val" id="pv6">0 ₭</span></div>
+        <div class="pvrow total"><span class="lbl">💵 ລາຍໄດ້ສຸດທິ:</span><span class="val" id="pv7">0 ₭</span></div>
+      </div>
+    </div>
+    <div class="mft">
+      <button class="btn btn-o" onclick="closeModal()">ຍົກເລີກ</button>
+      <button class="btn btn-g" onclick="saveEmp()">✅ ບັນທຶກ</button>
+    </div>
+  </div>
+</div>
 
-        const employees = await Employees.getAll();
-        if (!employees.length) {
-          elements.employeeBody.innerHTML = `<tr><td colspan="5" class="empty">ບໍ່ພົບຂໍ້ມູນພະນັກງານ</td></tr>`;
-          return;
-        }
+<div class="toast" id="toast"></div>
 
-        elements.employeeBody.innerHTML = employees.map((employee, idx) => {
-          return `
-            <tr>
-              <td>${idx + 1}</td>
-              <td>${employee.firstName || '-'} ${employee.lastName || ''}</td>
-              <td>${employee.position || '-'}</td>
-              <td>${employee.department || '-'}</td>
-              <td>${formatMoney(employee.salary)}</td>
-            </tr>
-          `;
-        }).join('');
-      } catch (err) {
-        console.error(err);
-        showError('ບໍ່ສາມາດໂຫລດຂໍ້ມູນໄດ້');
-      }
-    };
+<script>
+// ─── MONTH NAMES ───
+const MN = ['ມັງກອນ','ກຸມພາ','ມີນາ','ເມສາ','ພຶດສະພາ','ມິຖຸນາ','ກໍລະກົດ','ສິງຫາ','ກັນຍາ','ຕຸລາ','ພະຈິກ','ທັນວາ'];
 
-    document.getElementById('btnLogout').addEventListener('click', logout);
-    document.getElementById('btnRefresh').addEventListener('click', loadEmployees);
+// ─── STORAGE ───
+let DB = {};
+try { const r = localStorage.getItem('nhr_v2'); DB = r ? JSON.parse(r) : {}; } catch(e){ DB = {}; }
+function save(){ localStorage.setItem('nhr_v2', JSON.stringify(DB)); }
+function key(){ const m = document.getElementById('selMonth').value; const y = document.getElementById('selYear').value; return y+'_'+m; }
+function rows(){ return DB[key()] || []; }
+function setRows(r){ DB[key()] = r; save(); }
 
-    document.getElementById('employeeForm').addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const payload = {
-        firstName: document.getElementById('firstName').value.trim(),
-        lastName: document.getElementById('lastName').value.trim(),
-        position: document.getElementById('position').value.trim(),
-        department: document.getElementById('department').value.trim(),
-        salary: Number(document.getElementById('salary').value) || 0,
-        hireDate: document.getElementById('hireDate').value || new Date().toISOString().split('T')[0]
-      };
+// ─── SIGNATURE STORAGE ───
+let sigDB = {};
+try { const r = localStorage.getItem('nhr_sigs_v1'); sigDB = r ? JSON.parse(r) : {}; } catch(e){ sigDB = {}; }
+function saveSigs(){ localStorage.setItem('nhr_sigs_v1', JSON.stringify(sigDB)); }
+function sigKey(empIdx){ return key() + '_' + empIdx; }
 
-      try {
-        await Employees.create(payload);
-        document.getElementById('employeeForm').reset();
-        loadEmployees();
-      } catch (err) {
-        console.error(err);
-        showError('ບໍ່ສາມາດເພີ່ມພະນັກງານໄດ້');
-      }
-    });
+// ─── TAX CALC (Lao progressive 2026) ───
+function calcTax(income){
+  if(income <= 1300000) return {t5:0, t10:0, tax:0};
+  let t5=0, t10=0;
+  if(income > 1300000) t5 = (Math.min(income,5000000)-1300000)*0.05;
+  if(income > 5000000) t10 = (Math.min(income,15000000)-5000000)*0.10;
+  let tax = t5 + t10;
+  if(income > 15000000) tax += (income-15000000)*0.15;
+  return {t5:Math.round(t5), t10:Math.round(t10), tax:Math.round(tax)};
+}
 
-    loadEmployees();
-  </script>
+function calcRow(r){
+  const basic=+r.basic||0, ot=+r.ot||0, living=+r.living||0, other=+r.other||0, deduct=+r.deduct||0;
+  const gross = basic+ot+living+other;
+  const before = Math.max(0, gross-deduct);
+  const {t5,t10,tax} = calcTax(before);
+  return {gross, before, t5, t10, tax, net: before-tax};
+}
+
+// ─── FORMAT ───
+function F(n){ return n===0 ? '—' : new Intl.NumberFormat('en-US').format(Math.round(n)); }
+function FK(n){ return new Intl.NumberFormat('en-US').format(Math.round(n)) + ' ₭'; }
+
+// ─── RENDER ───
+function render(){
+  const R = rows();
+  const tbody = document.getElementById('ptBody');
+  if(!R.length){
+    tbody.innerHTML = '<tr><td colspan="17" class="empty">ຍັງບໍ່ມີຂໍ້ມູນ — ກົດ "ເພີ່ມພະນັກງານ" ເພື່ອເລີ່ມ</td></tr>';
+    updateFoot([]); updateSum([]); return;
+  }
+  tbody.innerHTML = R.map((r,i)=>{
+    const c = calcRow(r);
+    return `<tr>
+      <td class="c-no"><span class="rn">${i+1}</span></td>
+      <td class="c-name"><input class="ci-txt" value="${esc(r.name||'')}" placeholder="ຊື່ນາມສະກຸນ" onchange="updCell(${i},'name',this.value)"></td>
+      <td class="c-role"><input class="ci-role" value="${esc(r.role||'')}" placeholder="ໜ້າທີ່ຮັບຜິດຊອບ" onchange="updCell(${i},'role',this.value)"></td>
+      <td class="c-num"><input class="ci" value="${F(r.basic||0)}" onchange="updNum(${i},'basic',this)" onkeydown="ciKey(event,this)" onfocus="selAll(this)"></td>
+      <td class="c-num"><input class="ci" value="${F(r.ot||0)}" onchange="updNum(${i},'ot',this)" onkeydown="ciKey(event,this)" onfocus="selAll(this)"></td>
+      <td class="c-num"><input class="ci" value="${F(r.living||0)}" onchange="updNum(${i},'living',this)" onkeydown="ciKey(event,this)" onfocus="selAll(this)"></td>
+      <td class="c-num"><input class="ci" value="${F(r.other||0)}" onchange="updNum(${i},'other',this)" onkeydown="ciKey(event,this)" onfocus="selAll(this)"></td>
+      <td class="c-gross">${F(c.gross)}</td>
+      <td class="c-deduct">
+        <input class="ci" style="color:var(--red)" value="${F(r.deduct||0)}" onchange="updNum(${i},'deduct',this)" onkeydown="ciKey(event,this)" onfocus="selAll(this)">
+      </td>
+      <td class="c-before">${F(c.before)}</td>
+      <td class="c-tax5">${c.t5>0?F(c.t5):'—'}</td>
+      <td class="c-tax10">${c.t10>0?F(c.t10):'—'}</td>
+      <td class="c-taxamt">${c.tax>0?F(c.tax):'—'}</td>
+      <td class="c-net">${F(c.net)}</td>
+      <td class="c-sig"><div class="sig-cell" id="sigCell${i}"></div></td>
+      <td class="c-act no-print">
+        <button class="btn btn-o btn-sm" onclick="openEdit(${i})" title="ແກ້ໄຂ">✏️</button>
+        <button class="btn btn-r btn-sm" onclick="delRow(${i})" title="ລຶບ">🗑</button>
+      </td>
+    </tr>`;
+  }).join('');
+  updateFoot(R); updateSum(R);
+  R.forEach((_,i) => buildSigPad(i));
+}
+
+// ─── SIGNATURE PAD ───
+function buildSigPad(idx){
+  const cell = document.getElementById('sigCell'+idx);
+  if(!cell) return;
+  const sk = sigKey(idx);
+  const hasSig = !!sigDB[sk];
+  cell.innerHTML = `
+    <canvas class="sig-canvas${hasSig?' signed':''}" id="sigC${idx}" width="100" height="38" title="ເຊັນໃສ່ນີ້"></canvas>
+    <div class="sig-btns">
+      <button class="sig-btn sig-btn-clear" onclick="clearSig(${idx})">ລຶບ</button>
+      <button class="sig-btn sig-btn-save" onclick="saveSig(${idx})">ບັນທຶກ</button>
+    </div>`;
+  const canvas = document.getElementById('sigC'+idx);
+  if(hasSig){
+    const img = new Image();
+    img.onload = ()=>{ const ctx=canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(img,0,0); };
+    img.src = sigDB[sk];
+  }
+  initSigPad(canvas, idx);
+}
+
+function initSigPad(canvas, idx){
+  let drawing=false, lx=0, ly=0;
+  const ctx = canvas.getContext('2d');
+  ctx.strokeStyle = '#58a6ff';
+  ctx.lineWidth = 1.5;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  function getPos(e){
+    const r = canvas.getBoundingClientRect();
+    if(e.touches){ return {x:(e.touches[0].clientX-r.left)*(canvas.width/r.width), y:(e.touches[0].clientY-r.top)*(canvas.height/r.height)}; }
+    return {x:(e.clientX-r.left)*(canvas.width/r.width), y:(e.clientY-r.top)*(canvas.height/r.height)};
+  }
+  function down(e){ e.preventDefault(); drawing=true; const p=getPos(e); lx=p.x; ly=p.y; }
+  function move(e){ if(!drawing) return; e.preventDefault(); const p=getPos(e); ctx.beginPath(); ctx.moveTo(lx,ly); ctx.lineTo(p.x,p.y); ctx.stroke(); lx=p.x; ly=p.y; canvas.classList.add('signed'); }
+  function up(){ drawing=false; }
+
+  canvas.addEventListener('mousedown', down);
+  canvas.addEventListener('mousemove', move);
+  canvas.addEventListener('mouseup', up);
+  canvas.addEventListener('mouseleave', up);
+  canvas.addEventListener('touchstart', down, {passive:false});
+  canvas.addEventListener('touchmove', move, {passive:false});
+  canvas.addEventListener('touchend', up);
+}
+
+function saveSig(idx){
+  const canvas = document.getElementById('sigC'+idx);
+  if(!canvas) return;
+  sigDB[sigKey(idx)] = canvas.toDataURL();
+  saveSigs();
+  canvas.classList.add('signed');
+  toast('✅ ບັນທຶກລາຍເຊັນສຳເລັດ');
+}
+
+function clearSig(idx){
+  const canvas = document.getElementById('sigC'+idx);
+  if(!canvas) return;
+  canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+  canvas.classList.remove('signed');
+  delete sigDB[sigKey(idx)];
+  saveSigs();
+  toast('🗑 ລຶບລາຍເຊັນແລ້ວ');
+}
+
+// ─── FOOTER / SUMMARY ───
+function updateFoot(R){
+  let b=0,ot=0,lv=0,oth=0,gr=0,ded=0,bef=0,t5=0,t10=0,tx=0,nt=0;
+  R.forEach(r=>{ const c=calcRow(r); b+=+r.basic||0; ot+=+r.ot||0; lv+=+r.living||0; oth+=+r.other||0; gr+=c.gross; ded+=+r.deduct||0; bef+=c.before; t5+=c.t5; t10+=c.t10; tx+=c.tax; nt+=c.net; });
+  const s=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v>0?F(v):'—'; };
+  s('ft1',b); s('ft2',ot); s('ft3',lv); s('ft4',oth); s('ft5',gr);
+  s('ft6',ded); s('ft7',bef); s('ft8',t5); s('ft9',t10); s('ft10',tx); s('ft11',nt);
+}
+
+function updateSum(R){
+  let gr=0,ded=0,bef=0,tx=0,nt=0;
+  R.forEach(r=>{ const c=calcRow(r); gr+=c.gross; ded+=+r.deduct||0; bef+=c.before; tx+=c.tax; nt+=c.net; });
+  document.getElementById('sCount').textContent = R.length+' ຄົນ';
+  document.getElementById('sGross').textContent = FK(gr);
+  document.getElementById('sDeduct').textContent = FK(ded);
+  document.getElementById('sBefore').textContent = FK(bef);
+  document.getElementById('sTax').textContent = FK(tx);
+  document.getElementById('sNet').textContent = FK(nt);
+}
+
+// ─── INLINE EDIT ───
+function selAll(inp){ setTimeout(()=>inp.select(),10); }
+function ciKey(e,inp){ if(e.key==='Enter'||e.key==='Escape') inp.blur(); }
+function updCell(i,f,v){ const R=rows(); if(!R[i]) return; R[i][f]=v; setRows(R); render(); }
+function updNum(i,f,inp){ const v=parseFloat(inp.value.replace(/,/g,''))||0; const R=rows(); if(!R[i]) return; R[i][f]=v; setRows(R); render(); }
+function delRow(i){ if(!confirm('❌ ລຶບພະນັກງານຄົນນີ້?')) return; const R=rows(); R.splice(i,1); setRows(R); render(); toast('🗑 ລຶບແລ້ວ'); }
+
+// ─── MODAL ───
+function openAdd(){ 
+  document.getElementById('eIdx').value='';
+  document.getElementById('mTitle').textContent='➕ ເພີ່ມພະນັກງານ';
+  ['eName','eRole','eBasic','eOt','eLiving','eOther','eDeduct'].forEach(id=>document.getElementById(id).value='');
+  pvCalc();
+  document.getElementById('empOv').classList.add('on');
+  setTimeout(()=>document.getElementById('eName').focus(),120);
+}
+function openEdit(i){
+  const r=rows()[i];
+  document.getElementById('eIdx').value=i;
+  document.getElementById('mTitle').textContent='✏️ ແກ້ໄຂຂໍ້ມູນພະນັກງານ';
+  document.getElementById('eName').value=r.name||'';
+  document.getElementById('eRole').value=r.role||'';
+  document.getElementById('eBasic').value=r.basic||'';
+  document.getElementById('eOt').value=r.ot||'';
+  document.getElementById('eLiving').value=r.living||'';
+  document.getElementById('eOther').value=r.other||'';
+  document.getElementById('eDeduct').value=r.deduct||'';
+  pvCalc();
+  document.getElementById('empOv').classList.add('on');
+}
+function closeModal(){ document.getElementById('empOv').classList.remove('on'); }
+
+function pvCalc(){
+  const basic=+document.getElementById('eBasic').value||0;
+  const ot=+document.getElementById('eOt').value||0;
+  const living=+document.getElementById('eLiving').value||0;
+  const other=+document.getElementById('eOther').value||0;
+  const deduct=+document.getElementById('eDeduct').value||0;
+  const gross=basic+ot+living+other;
+  const before=Math.max(0,gross-deduct);
+  const {t5,t10,tax}=calcTax(before);
+  const net=before-tax;
+  document.getElementById('pv1').textContent=FK(gross);
+  document.getElementById('pv2').textContent=FK(deduct);
+  document.getElementById('pv3').textContent=FK(before);
+  document.getElementById('pv4').textContent=FK(t5);
+  document.getElementById('pv5').textContent=FK(t10);
+  document.getElementById('pv6').textContent=FK(tax);
+  document.getElementById('pv7').textContent=FK(net);
+}
+
+function saveEmp(){
+  const name=document.getElementById('eName').value.trim();
+  if(!name){ alert('⚠️ ກະລຸນາໃສ່ຊື່ພະນັກງານ'); return; }
+  const emp={
+    name, role:document.getElementById('eRole').value.trim(),
+    basic:+document.getElementById('eBasic').value||0,
+    ot:+document.getElementById('eOt').value||0,
+    living:+document.getElementById('eLiving').value||0,
+    other:+document.getElementById('eOther').value||0,
+    deduct:+document.getElementById('eDeduct').value||0
+  };
+  const R=rows(); const idx=document.getElementById('eIdx').value;
+  if(idx!=='') R[+idx]=emp; else R.push(emp);
+  setRows(R); closeModal(); render();
+  toast(idx!==''?'✅ ແກ້ໄຂສຳເລັດ':'✅ ເພີ່ມພະນັກງານສຳເລັດ');
+}
+
+// ─── EXPORT ───
+function doExportCSV(){
+  const R=rows(); const k=key(); const [y,m]=k.split('_');
+  const hdr='\uFEFF'+'No,ຊື່ນາມສະກຸນ,ໜ້າທີ່ຮັບຜິດຊອບ,ເງິນເດືອນພື້ນຖານ,ອັດຕາກີນ,ເງີນເດີນທາງ,ໂອທີຕ່າງໆ,ເງິນເດືອນທົ່ງໝົດ,ເງີນເພີ່ມໂມງແລະຊ່ວງເວລາທີ່ບໍ່ຄືກຫັກອາກອນ(ມຕ.35),ຈຳນວນເງີນຍົກເວັ້ນອາກອນ,Taxable5%,Taxable10%,ຈຳນວນອາກອນທີ່ຕ້ອງມອບ,ລາຍໄດ້ສຸດທິ';
+  const lines=[hdr];
+  R.forEach((r,i)=>{ const c=calcRow(r); lines.push([i+1,`"${r.name}"`,`"${r.role||''}"`,r.basic||0,r.ot||0,r.living||0,r.other||0,c.gross,r.deduct||0,c.before,c.t5,c.t10,c.tax,c.net].join(',')); });
+  const blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`payroll_${y}_${m}.csv`; a.click();
+  toast('✅ Export CSV ສຳເລັດ');
+}
+
+// ─── TOAST ───
+let tt;
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('on'),2800); }
+
+// ─── HELPERS ───
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ─── LABEL ───
+function updLabel(){
+  const m=parseInt(document.getElementById('selMonth').value);
+  const y=document.getElementById('selYear').value;
+  document.getElementById('tblLbl').textContent=MN[m-1]+' '+y;
+}
+
+// ─── INIT ───
+window.onload=()=>{
+  const t=new Date();
+  document.getElementById('topDate').textContent=t.toLocaleDateString('lo-LA',{weekday:'short',year:'numeric',month:'long',day:'numeric'});
+
+  const mSel=document.getElementById('selMonth');
+  MN.forEach((m,i)=>{ const o=document.createElement('option'); o.value=String(i+1).padStart(2,'0'); o.textContent=m; mSel.appendChild(o); });
+  mSel.value=String(t.getMonth()+1).padStart(2,'0');
+
+  const ySel=document.getElementById('selYear');
+  const cy=t.getFullYear();
+  for(let y=cy-3;y<=cy+2;y++){ const o=document.createElement('option'); o.value=y; o.textContent=y; if(y===cy) o.selected=true; ySel.appendChild(o); }
+
+  updLabel(); render();
+  mSel.addEventListener('change',()=>{ updLabel(); render(); });
+  ySel.addEventListener('change',()=>{ updLabel(); render(); });
+  document.getElementById('empOv').addEventListener('click',function(e){ if(e.target===this) closeModal(); });
+};
+</script>
 </body>
 </html>
