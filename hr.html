@@ -86,27 +86,27 @@ select.sel:focus{outline:none;border-color:var(--blue)}
 .ptbl tfoot td{padding:8px 8px;font-weight:700;font-size:12px;border-right:1px solid rgba(255,255,255,0.04)}
 .ptbl tfoot td:last-child{border-right:none}
 
-/* Cell types */
+/* Cell types — ທຸກ cell ຢູ່ເຄິ່ງກາງ */
 .c-no{text-align:center;color:var(--txt3);font-family:var(--mono);font-size:11px;width:34px}
-.c-name{min-width:140px;font-weight:500}
-.c-role{color:var(--txt2);min-width:110px;font-size:11px}
-.c-num{text-align:right;font-family:var(--mono)}
-.c-gross{text-align:right;font-family:var(--mono);font-weight:700;color:var(--green)}
-.c-deduct{text-align:right;font-family:var(--mono);color:var(--red)}
-.c-before{text-align:right;font-family:var(--mono);font-weight:700;color:var(--txt)}
-.c-tax5{text-align:right;font-family:var(--mono);color:var(--yellow)}
-.c-tax10{text-align:right;font-family:var(--mono);color:var(--yellow)}
-.c-taxamt{text-align:right;font-family:var(--mono);font-weight:700;color:var(--red)}
-.c-net{text-align:right;font-family:var(--mono);font-weight:700;color:var(--blue);font-size:12.5px}
+.c-name{text-align:center;min-width:140px;font-weight:500}
+.c-role{text-align:center;color:var(--txt2);min-width:110px;font-size:11px}
+.c-num{text-align:center;font-family:var(--mono)}
+.c-gross{text-align:center;font-family:var(--mono);font-weight:700;color:var(--green)}
+.c-deduct{text-align:center;font-family:var(--mono);color:var(--red)}
+.c-before{text-align:center;font-family:var(--mono);font-weight:700;color:var(--txt)}
+.c-tax5{text-align:center;font-family:var(--mono);color:var(--yellow)}
+.c-tax10{text-align:center;font-family:var(--mono);color:var(--yellow)}
+.c-taxamt{text-align:center;font-family:var(--mono);font-weight:700;color:var(--red)}
+.c-net{text-align:center;font-family:var(--mono);font-weight:700;color:var(--blue);font-size:12.5px}
 .c-sig{text-align:center;min-width:90px}
 .c-act{text-align:center;width:58px}
 
 /* Editable inputs */
-.ci{background:transparent;border:none;color:var(--txt);font-family:var(--mono);font-size:11.5px;text-align:right;width:100%;padding:0;outline:none;cursor:pointer}
+.ci{background:transparent;border:none;color:var(--txt);font-family:var(--mono);font-size:11.5px;text-align:center;width:100%;padding:0;outline:none;cursor:pointer}
 .ci:focus{background:var(--bg4);border-radius:3px;padding:2px 4px;outline:2px solid var(--blue);cursor:text}
-.ci-txt{background:transparent;border:none;color:var(--txt);font-family:var(--font);font-size:11.5px;width:100%;padding:0;outline:none}
+.ci-txt{background:transparent;border:none;color:var(--txt);font-family:var(--font);font-size:11.5px;width:100%;padding:0;outline:none;text-align:center}
 .ci-txt:focus{background:var(--bg4);border-radius:3px;padding:2px 4px;outline:2px solid var(--blue)}
-.ci-role{background:transparent;border:none;color:var(--txt2);font-family:var(--font);font-size:11px;width:100%;padding:0;outline:none}
+.ci-role{background:transparent;border:none;color:var(--txt2);font-family:var(--font);font-size:11px;width:100%;padding:0;outline:none;text-align:center}
 .ci-role:focus{background:var(--bg4);border-radius:3px;padding:2px 4px;outline:2px solid var(--blue)}
 
 /* Row num */
@@ -125,11 +125,11 @@ select.sel:focus{outline:none;border-color:var(--blue)}
 .empty{text-align:center;padding:40px 20px;color:var(--txt3)}
 
 /* Footer totals */
-.ft-lbl{text-align:right;color:var(--txt2);font-size:11px}
-.ft-g{text-align:right;font-family:var(--mono);color:var(--green);font-size:12px}
-.ft-r{text-align:right;font-family:var(--mono);color:var(--red);font-size:12px}
-.ft-b{text-align:right;font-family:var(--mono);color:var(--blue);font-size:12px}
-.ft-y{text-align:right;font-family:var(--mono);color:var(--yellow);font-size:12px}
+.ft-lbl{text-align:center;color:var(--txt2);font-size:11px}
+.ft-g{text-align:center;font-family:var(--mono);color:var(--green);font-size:12px}
+.ft-r{text-align:center;font-family:var(--mono);color:var(--red);font-size:12px}
+.ft-b{text-align:center;font-family:var(--mono);color:var(--blue);font-size:12px}
+.ft-y{text-align:center;font-family:var(--mono);color:var(--yellow);font-size:12px}
 
 /* Modal */
 .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;align-items:center;justify-content:center}
@@ -219,7 +219,6 @@ select.sel:focus{outline:none;border-color:var(--blue)}
     </div>
   </div>
 
-  <!-- CONTROLS -->
   <div class="ctrl-bar">
     <span class="ctrl-label">ປະຈໍາເດືອນ:</span>
     <select class="sel" id="selMonth"></select>
@@ -239,17 +238,14 @@ select.sel:focus{outline:none;border-color:var(--blue)}
     </button>
   </div>
 
-  <!-- SUMMARY -->
   <div class="sum-grid">
     <div class="sum-card"><div class="sum-lbl">👥 ຈຳນວນພະນັກງານ</div><div class="sum-val b" id="sCount">0 ຄົນ</div></div>
     <div class="sum-card"><div class="sum-lbl">💰 ເງິນເດືອນທົ່ງໝົດ</div><div class="sum-val g" id="sGross">0 ₭</div></div>
     <div class="sum-card"><div class="sum-lbl">📉 ຫັກ ມ.35 ລວມ</div><div class="sum-val r" id="sDeduct">0 ₭</div></div>
-    <div class="sum-card"><div class="sum-lbl">🧾 ຈຳນວນເງີນຍົກເວັ້ນອາກອນ</div><div class="sum-val" id="sBefore" style="color:var(--txt)">0 ₭</div></div>
     <div class="sum-card"><div class="sum-lbl">🏛 ອາກອນລວມ</div><div class="sum-val r" id="sTax">0 ₭</div></div>
     <div class="sum-card"><div class="sum-lbl">✅ ລາຍໄດ້ສຸດທິລວມ</div><div class="sum-val b" id="sNet">0 ₭</div></div>
   </div>
 
-  <!-- TABLE -->
   <div class="card">
     <div class="card-head">
       <span class="card-title">📋 ຕາຕະລາງເງິນເດືອນ — <span id="tblLbl"></span></span>
@@ -258,7 +254,6 @@ select.sel:focus{outline:none;border-color:var(--blue)}
     <div class="tbl-wrap">
       <table class="ptbl">
         <thead>
-          <!-- GROUP ROW -->
           <tr class="grp">
             <th rowspan="2">No</th>
             <th rowspan="2">ຊື່ນາມສະກຸນ</th>
@@ -266,27 +261,24 @@ select.sel:focus{outline:none;border-color:var(--blue)}
             <th colspan="4">ລາຍຮັບ (₭)</th>
             <th rowspan="2">ເງິນເດືອນ<br>ທົ່ງໝົດ</th>
             <th rowspan="2">ເງີນເພີ່ມໂມງ ແລະ ຊ່ວງເວລາ<br>ທີ່ບໍ່ຄືກ ຫັກອາກອນ<br><span style="font-size:9px;opacity:.8">(ມຕ.35)</span></th>
-            <th rowspan="2">ຈຳນວນເງີນ<br>ຍົກເວັ້ນ<br>ອາກອນ</th>
+            <th rowspan="2">ຈຳນວນເງີນ<br>ຍົກເວັ້ນ<br>ອາກອນ<br><span style="font-size:8.5px;opacity:.8">(1,300,000)</span></th>
             <th colspan="2">Taxable</th>
             <th rowspan="2">ຈຳນວນອາກອນ<br>ທີ່ຕ້ອງມອບ</th>
             <th rowspan="2">ລາຍໄດ້<br>ສຸດທິ</th>
             <th rowspan="2">ລາຍເຊັນ</th>
             <th rowspan="2" class="no-print">ຈັດການ</th>
           </tr>
-          <!-- COLUMN ROW -->
           <tr class="cols">
             <th>ເງິນເດືອນ<br>ພື້ນຖານ</th>
             <th>ອັດຕາ<br>ກີນ</th>
             <th>ເງີນເດີນ<br>ທາງ</th>
             <th>ໂອທີ<br>ຕ່າງໆ</th>
-            <!-- gross, deduct, before, -->
             <th>5%<br><span style="font-size:8.5px;opacity:.8">1,300,001–5,000,000</span></th>
             <th>10%<br><span style="font-size:8.5px;opacity:.8">5,000,001–15,000,000</span></th>
-            <!-- tax, net, sig, act -->
-          </tr>
+            </tr>
         </thead>
         <tbody id="ptBody">
-          <tr><td colspan="17" class="empty">ຍັງບໍ່ມີຂໍ້ມູນ — ກົດ "ເພີ່ມພະນັກງານ" ເພື່ອເລີ່ມ</td></tr>
+          <tr><td colspan="16" class="empty">ຍັງບໍ່ມີຂໍ້ມູນ — ກົດ "ເພີ່ມພະນັກງານ" ເພື່ອເລີ່ມ</td></tr>
         </tbody>
         <tfoot>
           <tr>
@@ -297,11 +289,11 @@ select.sel:focus{outline:none;border-color:var(--blue)}
             <td id="ft4" class="ft-g"></td>
             <td id="ft5" class="ft-g"></td>
             <td id="ft6" class="ft-r"></td>
-            <td id="ft7" class="ft-g"></td>
+            <td></td>
+            <td id="ft7" class="ft-y"></td>
             <td id="ft8" class="ft-y"></td>
-            <td id="ft9" class="ft-y"></td>
-            <td id="ft10" class="ft-r"></td>
-            <td id="ft11" class="ft-b"></td>
+            <td id="ft9" class="ft-r"></td>
+            <td id="ft10" class="ft-b"></td>
             <td></td>
             <td class="no-print"></td>
           </tr>
@@ -309,10 +301,7 @@ select.sel:focus{outline:none;border-color:var(--blue)}
       </table>
     </div>
   </div>
-</div><!-- /content -->
-
-<!-- ADD/EDIT MODAL -->
-<div class="ov" id="empOv">
+</div><div class="ov" id="empOv">
   <div class="modal">
     <div class="mhd">
       <h3 id="mTitle">➕ ເພີ່ມພະນັກງານ</h3>
@@ -364,12 +353,11 @@ select.sel:focus{outline:none;border-color:var(--blue)}
         </div>
       </div>
 
-      <!-- PREVIEW -->
       <div class="pvbox">
         <div class="pvbox-lbl">📊 ສະຫຼຸບການຄຳນວນ</div>
         <div class="pvrow"><span class="lbl">ເງິນເດືອນທົ່ງໝົດ:</span><span class="val" id="pv1">0 ₭</span></div>
         <div class="pvrow deduct"><span class="lbl">ຫັກ ມ.35:</span><span class="val" id="pv2">0 ₭</span></div>
-        <div class="pvrow"><span class="lbl">ຈຳນວນເງີນຍົກເວັ້ນອາກອນ:</span><span class="val" id="pv3">0 ₭</span></div>
+        <div class="pvrow"><span class="lbl">ຈຳນວນເງີນຍົກເວັ້ນ (1,300,000):</span><span class="val" id="pv3">0 ₭</span></div>
         <div class="pvrow tax"><span class="lbl">ອາກອນ 5% (ສ່ວນ 1.3M–5M):</span><span class="val" id="pv4">0 ₭</span></div>
         <div class="pvrow tax"><span class="lbl">ອາກອນ 10% (ສ່ວນ 5M–15M):</span><span class="val" id="pv5">0 ₭</span></div>
         <div class="pvrow tax"><span class="lbl">ອາກອນລວມ:</span><span class="val" id="pv6">0 ₭</span></div>
@@ -387,9 +375,9 @@ select.sel:focus{outline:none;border-color:var(--blue)}
 
 <script type="module">
 // ─── FIREBASE INIT ───
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBuHAV6Uep0hfGvrTH5fDDBANs8b8o7N0U",
@@ -470,22 +458,41 @@ async function bootHR(){
 window.addEventListener('DOMContentLoaded', bootHR);
 
 // ─── TAX CALC (Lao progressive 2026) ───
-function calcTax(income){
-  if(income <= 1300000) return {t5:0, t10:0, tax:0};
-  let t5=0, t10=0;
-  if(income > 1300000) t5 = (Math.min(income,5000000)-1300000)*0.05;
-  if(income > 5000000) t10 = (Math.min(income,15000000)-5000000)*0.10;
-  let tax = t5 + t10;
-  if(income > 15000000) tax += (income-15000000)*0.15;
-  return {t5:Math.round(t5), t10:Math.round(t10), tax:Math.round(tax)};
+// ວິເຄາະຈາກ PDF:
+//   before  = 1,300,000 (ຄ່າຍົກເວັ້ນຄົງທີ່, ບໍ່ຄຳນວນ tax)
+//   t5_base = gross - 1,300,000  (ສ່ວນ 1,300,001–5,000,000 = 3,700,000 max)
+//   t10_base= gross - 5,000,000  (ສ່ວນ 5,000,001–15,000,000)
+//   t5  = t5_base  × 5%
+//   t10 = t10_base × 10%
+//   tax = t5 + t10
+//   net = gross - tax
+function calcTax(before){
+  // before = gross - deduct(ມ.35) = ຈຳນວນທີ່ຕ້ອງຄຳນວນອາກອນ
+  // 0 – 1,300,000        : ຍົກເວັ້ນ (0%)
+  // 1,300,001–5,000,000  : 5%   → t5_base  max = 3,700,000
+  // 5,000,001–15,000,000 : 10%  → t10_base max = 10,000,000
+  // > 15,000,000         : 15%
+  const t5_base  = before > 1300000  ? Math.min(before, 5000000)  - 1300000  : 0;
+  const t10_base = before > 5000000  ? Math.min(before, 15000000) - 5000000  : 0;
+  const t15_base = before > 15000000 ? before - 15000000 : 0;
+  const t5  = Math.round(t5_base  * 0.05);
+  const t10 = Math.round(t10_base * 0.10);
+  const t15 = Math.round(t15_base * 0.15);
+  const tax = t5 + t10 + t15;
+  // t5_base/t10_base = ຈຳນວນທີ່ສະແດງໃນຖັນ Taxable ຂອງ PDF (ບໍ່ແມ່ນ tax amount)
+  return {t5_base, t10_base, t5, t10, tax};
 }
 
 function calcRow(r){
   const basic=+r.basic||0, ot=+r.ot||0, living=+r.living||0, other=+r.other||0, deduct=+r.deduct||0;
-  const gross = basic+ot+living+other;
-  const before = Math.max(0, gross-deduct);
-  const {t5,t10,tax} = calcTax(before);
-  return {gross, before, t5, t10, tax, net: before-tax};
+  const gross  = basic + ot + living + other;
+  // before = gross - deduct (ມ.35) = ຈຳນວນເງິນທີ່ຕ້ອງຄຳນວນອາກອນ
+  const before = Math.max(0, gross - deduct);
+  // ຄ່າຍົກເວັ້ນຄົງທີ່ = 1,300,000 (ສ່ວນທຳອິດທີ່ບໍ່ເສຍອາກອນ)
+  const exempt = Math.min(before, 1300000);
+  const {t5_base, t10_base, t5, t10, tax} = calcTax(before);
+  const net = gross - tax;
+  return {gross, before, exempt, t5_base, t10_base, t5, t10, tax, net};
 }
 
 // ─── FORMAT ───
@@ -497,7 +504,7 @@ function render(){
   const R = rows();
   const tbody = document.getElementById('ptBody');
   if(!R.length){
-    tbody.innerHTML = '<tr><td colspan="17" class="empty">ຍັງບໍ່ມີຂໍ້ມູນ — ກົດ "ເພີ່ມພະນັກງານ" ເພື່ອເລີ່ມ</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="16" class="empty">ຍັງບໍ່ມີຂໍ້ມູນ — ກົດ "ເພີ່ມພະນັກງານ" ເພື່ອເລີ່ມ</td></tr>';
     updateFoot([]); updateSum([]); return;
   }
   tbody.innerHTML = R.map((r,i)=>{
@@ -514,9 +521,9 @@ function render(){
       <td class="c-deduct">
         <input class="ci" style="color:var(--red)" value="${F(r.deduct||0)}" onchange="updNum(${i},'deduct',this)" onkeydown="ciKey(event,this)" onfocus="selAll(this)">
       </td>
-      <td class="c-before">${F(c.before)}</td>
-      <td class="c-tax5">${c.t5>0?F(c.t5):'—'}</td>
-      <td class="c-tax10">${c.t10>0?F(c.t10):'—'}</td>
+      <td class="c-before">${F(c.exempt)}</td>
+      <td class="c-tax5">${c.t5_base>0?F(c.t5_base):'—'}</td>
+      <td class="c-tax10">${c.t10_base>0?F(c.t10_base):'—'}</td>
       <td class="c-taxamt">${c.tax>0?F(c.tax):'—'}</td>
       <td class="c-net">${F(c.net)}</td>
       <td class="c-sig"><div class="sig-cell" id="sigCell${i}"></div></td>
@@ -598,11 +605,31 @@ function clearSig(idx){
 
 // ─── FOOTER / SUMMARY ───
 function updateFoot(R){
-  let b=0,ot=0,lv=0,oth=0,gr=0,ded=0,bef=0,t5=0,t10=0,tx=0,nt=0;
-  R.forEach(r=>{ const c=calcRow(r); b+=+r.basic||0; ot+=+r.ot||0; lv+=+r.living||0; oth+=+r.other||0; gr+=c.gross; ded+=+r.deduct||0; bef+=c.before; t5+=c.t5; t10+=c.t10; tx+=c.tax; nt+=c.net; });
+  let sumBasic=0,sumOt=0,sumLv=0,sumOth=0,sumGross=0,sumDed=0,sumExempt=0,sumT10base=0,sumTax=0,sumNet=0;
+  R.forEach(r=>{
+    const c=calcRow(r);
+    sumBasic  +=+r.basic||0;
+    sumOt     +=+r.ot||0;
+    sumLv     +=+r.living||0;
+    sumOth    +=+r.other||0;
+    sumGross  +=c.gross;
+    sumDed    +=+r.deduct||0;
+    sumExempt +=c.exempt;
+    // ເອົາ sumT5base ອອກ ບໍ່ຕ້ອງບວກຜົນລວມແລ້ວ
+    sumT10base+=c.t10_base;
+    sumTax    +=c.tax;
+    sumNet    +=c.net;
+  });
   const s=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v>0?F(v):'—'; };
-  s('ft1',b); s('ft2',ot); s('ft3',lv); s('ft4',oth); s('ft5',gr);
-  s('ft6',ded); s('ft7',bef); s('ft8',t5); s('ft9',t10); s('ft10',tx); s('ft11',nt);
+  s('ft1',sumBasic);  s('ft2',sumOt);     s('ft3',sumLv);    s('ft4',sumOth);
+  s('ft5',sumGross);  s('ft6',sumDed);
+  
+  // ລຶບຜົນລວມຖັນ 5% ໃຫ້ເປັນຄ່າວ່າງ
+  const ft7 = document.getElementById('ft7');
+  if(ft7) ft7.textContent = ''; 
+
+  // ຍັງຄົງສະແດງ 10%, ອາກອນລວມ ແລະ ສຸດທິ ຄືເກົ່າ
+  s('ft8',sumT10base); s('ft9',sumTax);   s('ft10',sumNet);
 }
 
 function updateSum(R){
@@ -611,7 +638,6 @@ function updateSum(R){
   document.getElementById('sCount').textContent = R.length+' ຄົນ';
   document.getElementById('sGross').textContent = FK(gr);
   document.getElementById('sDeduct').textContent = FK(ded);
-  document.getElementById('sBefore').textContent = FK(bef);
   document.getElementById('sTax').textContent = FK(tx);
   document.getElementById('sNet').textContent = FK(nt);
 }
@@ -656,11 +682,12 @@ function pvCalc(){
   const deduct=+document.getElementById('eDeduct').value||0;
   const gross=basic+ot+living+other;
   const before=Math.max(0,gross-deduct);
-  const {t5,t10,tax}=calcTax(before);
-  const net=before-tax;
+  const exempt=Math.min(before,1300000);
+  const {t5_base,t10_base,t5,t10,tax}=calcTax(before);
+  const net=gross-tax;
   document.getElementById('pv1').textContent=FK(gross);
   document.getElementById('pv2').textContent=FK(deduct);
-  document.getElementById('pv3').textContent=FK(before);
+  document.getElementById('pv3').textContent=FK(exempt);
   document.getElementById('pv4').textContent=FK(t5);
   document.getElementById('pv5').textContent=FK(t10);
   document.getElementById('pv6').textContent=FK(tax);
