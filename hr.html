@@ -186,7 +186,17 @@ select.sel:focus{outline:none;border-color:var(--blue)}
 </style>
   <script>if(!localStorage.getItem("authToken")){window.location.replace("login.html");}</script>
 </head>
-<body>
+<body style="visibility:hidden;">
+
+<div id="hr-loading" style="position:fixed;inset:0;background:#0d1117;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;">
+  <div style="width:48px;height:48px;background:linear-gradient(135deg,#238636,#3fb950);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;">⚡</div>
+  <div style="color:#e6edf3;font-size:15px;font-weight:600;">NAMSOR HYDRO — HR</div>
+  <div style="color:#8b949e;font-size:13px;">ກຳລັງໂຫລດຂໍ້ມູນ...</div>
+  <div style="width:200px;height:3px;background:#21262d;border-radius:2px;overflow:hidden;margin-top:4px;">
+    <div style="width:60%;height:100%;background:linear-gradient(90deg,#238636,#3fb950);border-radius:2px;animation:ldbar 1.5s ease-in-out infinite;"></div>
+  </div>
+  <style>@keyframes ldbar{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}</style>
+</div>
 
 <div class="top-bar">
   <a href="index.html" class="back-btn">
@@ -196,6 +206,7 @@ select.sel:focus{outline:none;border-color:var(--blue)}
   <span class="top-title">💼 ລະບົບ HR — ຕາຕະລາງເງິນເດືອນ</span>
   <div class="spacer"></div>
   <span class="top-date" id="topDate"></span>
+  <button onclick="doLogout()" style="margin-left:8px;background:rgba(248,81,73,0.1);border:1px solid rgba(248,81,73,0.25);color:#f85149;border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:var(--font);">&#128275; ອອກຈາກລະບບ</button>
 </div>
 
 <div class="content">
@@ -374,23 +385,89 @@ select.sel:focus{outline:none;border-color:var(--blue)}
 
 <div class="toast" id="toast"></div>
 
-<script>
+<script type="module">
+// ─── FIREBASE INIT ───
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBuHAV6Uep0hfGvrTH5fDDBANs8b8o7N0U",
+  authDomain: "namsor-hydropower.firebaseapp.com",
+  projectId: "namsor-hydropower",
+  storageBucket: "namsor-hydropower.firebasestorage.app",
+  messagingSenderId: "352110895052",
+  appId: "1:352110895052:web:2661a7a3c526002ff40769"
+};
+const app = initializeApp(firebaseConfig);
+const db_fs = getFirestore(app);
+const auth = getAuth(app);
+
+// AUTH GUARD
+const ALLOWED_EMAILS = ['namsor911@gmail.com'];
+onAuthStateChanged(auth, (user) => {
+  if (!user || !ALLOWED_EMAILS.includes(user.email.toLowerCase())) {
+    window.location.href = 'login.html';
+  } else {
+    document.body.style.visibility = 'visible';
+  }
+});
+window.doLogout = async () => {
+  if (confirm('logout?')) { await signOut(auth); window.location.href = 'login.html'; }
+};
+
+async function fsGet(id){ const s=await getDoc(doc(db_fs,'namsor',id)); return s.exists()?s.data().value:null; }
+async function fsSet(id,val){ await setDoc(doc(db_fs,'namsor',id),{value:val}); }
+
 // ─── MONTH NAMES ───
 const MN = ['ມັງກອນ','ກຸມພາ','ມີນາ','ເມສາ','ພຶດສະພາ','ມິຖຸນາ','ກໍລະກົດ','ສິງຫາ','ກັນຍາ','ຕຸລາ','ພະຈິກ','ທັນວາ'];
 
 // ─── STORAGE ───
 let DB = {};
-try { const r = localStorage.getItem('nhr_v2'); DB = r ? JSON.parse(r) : {}; } catch(e){ DB = {}; }
-function save(){ localStorage.setItem('nhr_v2', JSON.stringify(DB)); }
-function key(){ const m = document.getElementById('selMonth').value; const y = document.getElementById('selYear').value; return y+'_'+m; }
-function rows(){ return DB[key()] || []; }
-function setRows(r){ DB[key()] = r; save(); }
-
-// ─── SIGNATURE STORAGE ───
 let sigDB = {};
-try { const r = localStorage.getItem('nhr_sigs_v1'); sigDB = r ? JSON.parse(r) : {}; } catch(e){ sigDB = {}; }
-function saveSigs(){ localStorage.setItem('nhr_sigs_v1', JSON.stringify(sigDB)); }
-function sigKey(empIdx){ return key() + '_' + empIdx; }
+let _saving = false;
+
+async function save(){
+  if(_saving) return;
+  _saving=true;
+  try { await fsSet('hr_v1', DB); } catch(e){ console.error('HR save error',e); } finally { _saving=false; }
+}
+async function saveSigs(){
+  try { await fsSet('hr_sigs_v1', sigDB); } catch(e){ console.error('HR sig save error',e); }
+}
+function key(){ const m=document.getElementById('selMonth').value; const y=document.getElementById('selYear').value; return y+'_'+m; }
+function rows(){ return DB[key()] || []; }
+function setRows(r){ DB[key()]=r; save(); }
+function sigKey(empIdx){ return key()+'_'+empIdx; }
+
+// ─── REALTIME LISTENER (sync ທຸກເຄື່ອງ) ───
+onSnapshot(doc(db_fs,'namsor','hr_v1'),(snap)=>{
+  if(!snap.exists()) return;
+  const val=snap.data().value;
+  if(val && typeof val==='object'){ DB=val; if(typeof render==='function') render(); }
+});
+onSnapshot(doc(db_fs,'namsor','hr_sigs_v1'),(snap)=>{
+  if(!snap.exists()) return;
+  const val=snap.data().value;
+  if(val && typeof val==='object'){ sigDB=val; if(typeof render==='function') render(); }
+});
+
+// ─── BOOT: load data then init UI ───
+async function bootHR(){
+  const overlay=document.getElementById('hr-loading');
+  try {
+    const rawDB = await fsGet('hr_v1');
+    DB = (rawDB && typeof rawDB==='object') ? rawDB : {};
+    const rawSigs = await fsGet('hr_sigs_v1');
+    sigDB = (rawSigs && typeof rawSigs==='object') ? rawSigs : {};
+    overlay.style.display='none';
+    initUI();
+  } catch(e){
+    overlay.innerHTML='<div style="text-align:center;color:#f85149;padding:40px;"><div style="font-size:32px;margin-bottom:12px;">⚠️</div><div style="font-weight:600;margin-bottom:8px;">ເຊື່ອມຕໍ່ Firebase ບໍ່ສຳເລັດ</div><button onclick="location.reload()" style="padding:8px 20px;background:#238636;color:#fff;border:none;border-radius:6px;cursor:pointer;margin-top:12px;">ລອງໃໝ່</button></div>';
+    console.error('HR boot error:',e);
+  }
+}
+window.addEventListener('DOMContentLoaded', bootHR);
 
 // ─── TAX CALC (Lao progressive 2026) ───
 function calcTax(income){
@@ -632,24 +709,43 @@ function updLabel(){
   document.getElementById('tblLbl').textContent=MN[m-1]+' '+y;
 }
 
-// ─── INIT ───
-window.onload=()=>{
+// ─── EXPOSE TO WINDOW (for onclick= in HTML) ───
+window.openAdd=()=>openAdd();
+window.openEdit=(i)=>openEdit(i);
+window.closeModal=()=>closeModal();
+window.saveEmp=()=>saveEmp();
+window.delRow=(i)=>delRow(i);
+window.pvCalc=()=>pvCalc();
+window.doExportCSV=()=>doExportCSV();
+window.updCell=(i,f,v)=>updCell(i,f,v);
+window.updNum=(i,f,inp)=>updNum(i,f,inp);
+window.selAll=(inp)=>selAll(inp);
+window.ciKey=(e,inp)=>ciKey(e,inp);
+window.saveSig=(idx)=>saveSig(idx);
+window.clearSig=(idx)=>clearSig(idx);
+
+// ─── INIT UI (called after Firebase data loaded) ───
+function initUI(){
   const t=new Date();
   document.getElementById('topDate').textContent=t.toLocaleDateString('lo-LA',{weekday:'short',year:'numeric',month:'long',day:'numeric'});
 
   const mSel=document.getElementById('selMonth');
-  MN.forEach((m,i)=>{ const o=document.createElement('option'); o.value=String(i+1).padStart(2,'0'); o.textContent=m; mSel.appendChild(o); });
+  if(mSel.options.length===0){
+    MN.forEach((m,i)=>{ const o=document.createElement('option'); o.value=String(i+1).padStart(2,'0'); o.textContent=m; mSel.appendChild(o); });
+  }
   mSel.value=String(t.getMonth()+1).padStart(2,'0');
 
   const ySel=document.getElementById('selYear');
-  const cy=t.getFullYear();
-  for(let y=cy-3;y<=cy+2;y++){ const o=document.createElement('option'); o.value=y; o.textContent=y; if(y===cy) o.selected=true; ySel.appendChild(o); }
+  if(ySel.options.length===0){
+    const cy=t.getFullYear();
+    for(let y=cy-3;y<=cy+2;y++){ const o=document.createElement('option'); o.value=y; o.textContent=y; if(y===cy) o.selected=true; ySel.appendChild(o); }
+  }
 
   updLabel(); render();
   mSel.addEventListener('change',()=>{ updLabel(); render(); });
   ySel.addEventListener('change',()=>{ updLabel(); render(); });
   document.getElementById('empOv').addEventListener('click',function(e){ if(e.target===this) closeModal(); });
-};
+}
 </script>
 </body>
 </html>

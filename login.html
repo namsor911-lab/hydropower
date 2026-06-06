@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="lo">
 <head>
@@ -94,7 +93,7 @@
     .btn-login {
       width: 100%;
       background-color: var(--green);
-      color: white; /* 🛠️ ແກ້ໄຂຈາກ #white */
+      color: white;
       border: none;
       border-radius: var(--r);
       padding: 12px;
@@ -156,31 +155,25 @@
     </form>
   </div>
 
-  <script>
-    const Auth = {
-      login: async (email, password) => {
-        return new Promise((resolve, reject) => {
-          setTimeout(() => {
-            if (email === 'namsor911@gmail.com' && password === 'Meexay2026') {
-              resolve({
-                token: 'mock-jwt-token-xyz-123',
-                user: { email: 'namsor911@gmail.com', role: 'admin', name: 'ผู้ดูแลระบบ' }
-              });
-            } else {
-              reject(new Error('ອີເມວ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ'));
-            }
-          }, 1000);
-        });
-      }
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBuHAV6Uep0hfGvrTH5fDDBANs8b8o7N0U",
+      authDomain: "namsor-hydropower.firebaseapp.com",
+      projectId: "namsor-hydropower",
+      storageBucket: "namsor-hydropower.firebasestorage.app",
+      messagingSenderId: "352110895052",
+      appId: "1:352110895052:web:2661a7a3c526002ff40769"
     };
 
-    function setAuthToken(token) {
-      localStorage.setItem('authToken', token);
-    }
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-    async function handleLogin(event) {
+    document.getElementById('loginForm').addEventListener('submit', async (event) => {
       event.preventDefault();
-      
+
       const email = document.getElementById('emailInput').value.trim();
       const password = document.getElementById('passwordInput').value;
       const errorMsg = document.getElementById('errorMessage');
@@ -198,26 +191,25 @@
         loginBtn.disabled = true;
         loginBtn.textContent = 'ກຳລັງໂຫລດ...';
 
-        const response = await Auth.login(email, password);
-        
-        if (response && response.token) {
-          setAuthToken(response.token);
-          localStorage.setItem('currentUser', JSON.stringify(response.user));
-          
-          setTimeout(() => {
-            window.location.href = 'index.html'; /* 🛠️ ແກ້ໄຂ Path ໃຫ້ຮອງຮັບ GitHub Pages */
-          }, 500);
-        } else {
-          throw new Error('Invalid response from server');
-        }
+        await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = 'index.html';
+
       } catch (err) {
         console.error('Login error:', err);
-        errorMsg.textContent = '❌ ' + (err.message || 'ເຂົ້າລະບົບບໍ່ສຳເລັດ');
+        let msg = 'ເຂົ້າລະບົບບໍ່ສຳເລັດ';
+        if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
+          msg = 'ອີເມວ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ';
+        } else if (err.code === 'auth/too-many-requests') {
+          msg = 'ລອງໃໝ່ພາຍຫຼັງ — ບັນຊີຖືກລ໋ອກຊົ່ວຄາວ';
+        } else if (err.code === 'auth/configuration-not-found') {
+          msg = 'ກະລຸນາເປີດໃຊ້ Email/Password ໃນ Firebase Console';
+        }
+        errorMsg.textContent = '❌ ' + msg;
         errorMsg.classList.add('show');
         loginBtn.disabled = false;
         loginBtn.textContent = 'ເຂົ້າລະບົບ';
       }
-    }
+    });
   </script>
 </body>
 </html>

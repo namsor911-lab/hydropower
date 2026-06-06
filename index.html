@@ -334,9 +334,119 @@ select.sel:focus, input.inp:focus { outline: none; border-color: var(--blue); }
   .dash-grid { grid-template-columns: 1fr; }
 }
 </style>
-  <script>if(!localStorage.getItem("authToken")){window.location.replace("login.html");}</script>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBuHAV6Uep0hfGvrTH5fDDBANs8b8o7N0U",
+      authDomain: "namsor-hydropower.firebaseapp.com",
+      projectId: "namsor-hydropower",
+      storageBucket: "namsor-hydropower.firebasestorage.app",
+      messagingSenderId: "352110895052",
+      appId: "1:352110895052:web:2661a7a3c526002ff40769"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const firestore = getFirestore(app);
+    const auth = getAuth(app);
+    window._fs = firestore;
+    window._fsReady = true;
+
+    // AUTH GUARD
+    const ALLOWED_EMAILS = ['namsor911@gmail.com'];
+    onAuthStateChanged(auth, (user) => {
+      if (!user || !ALLOWED_EMAILS.includes(user.email.toLowerCase())) {
+        window.location.href = 'login.html';
+      } else {
+        document.body.style.visibility = 'visible';
+      }
+    });
+    window.doLogout = async () => {
+      if (confirm('logout?')) { const {signOut} = await import('https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js'); await signOut(auth); window.location.href = 'login.html'; }
+    };
+
+    // ===== Firestore helpers =====
+    window.fsGet = async (docId) => {
+      const snap = await getDoc(doc(firestore, 'namsor', docId));
+      return snap.exists() ? snap.data().value : null;
+    };
+    window.fsSet = async (docId, value) => {
+      await setDoc(doc(firestore, 'namsor', docId), { value });
+    };
+    window.fsListen = (docId, callback) => {
+      return onSnapshot(doc(firestore, 'namsor', docId), (snap) => {
+        if (snap.exists()) callback(snap.data().value);
+      });
+    };
+
+    // ===== Load all data from Firestore then boot =====
+    async function bootApp() {
+      const overlay = document.getElementById('fb-loading');
+      try {
+        // Load db
+        const rawDb = await window.fsGet('acc_v2');
+        window._db_init = Array.isArray(rawDb) ? rawDb : [];
+
+        // Load purchase
+        const rawP = await window.fsGet('purchaseItems');
+        window._purchase_init = Array.isArray(rawP) ? rawP : [];
+
+        // Load budget
+        const rawB = await window.fsGet('budget_v1');
+        window._budget_init = (rawB && typeof rawB === 'object') ? rawB : {};
+
+        // Load sigs
+        const rawS = await window.fsGet('sigData_v2');
+        window._sig_init = (rawS && typeof rawS === 'object') ? rawS : {};
+
+        // Listen for realtime changes (other users / other tabs saving)
+        // Guard: skip listener updates until boot is done to avoid overwriting loaded data
+        window.fsListen('acc_v2', (val) => {
+          if (!window._fsBootDone || !Array.isArray(val)) return;
+          db = val;
+          if (typeof updateAcc === 'function') updateAcc();
+          if (typeof updateDash === 'function') updateDash();
+        });
+        window.fsListen('purchaseItems', (val) => {
+          if (!window._fsBootDone || !Array.isArray(val)) return;
+          purchaseItems = val;
+          if (typeof renderPurchaseTable === 'function') renderPurchaseTable();
+        });
+        window.fsListen('budget_v1', (val) => {
+          if (!window._fsBootDone || !val || typeof val !== 'object') return;
+          budgetData = val;
+          if (typeof renderBudget === 'function') renderBudget();
+        });
+        window.fsListen('sigData_v2', (val) => {
+          if (!window._fsBootDone || !val || typeof val !== 'object') return;
+          sigData = val;
+          if (typeof renderSigSection === 'function') renderSigSection();
+        });
+
+        overlay.style.display = 'none';
+        if (typeof window._appBoot === 'function') window._appBoot();
+      } catch(e) {
+        overlay.innerHTML = '<div style="text-align:center;color:#f85149;padding:40px;"><div style="font-size:32px;margin-bottom:16px;">⚠️</div><div style="font-size:15px;font-weight:600;margin-bottom:8px;">ເຊື່ອມຕໍ່ Firebase ບໍ່ສຳເລັດ</div><div style="font-size:13px;color:#8b949e;margin-bottom:20px;">ກະລຸນາໃສ່ Firebase Config ທີ່ຖືກຕ້ອງໃນ index.html</div><button onclick="location.reload()" style="padding:8px 20px;background:#238636;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;">ລອງໃໝ່</button></div>';
+        console.error('Firebase boot error:', e);
+      }
+    }
+    window.addEventListener('DOMContentLoaded', bootApp);
+  </script>
 </head>
-<body>
+<body style="visibility:hidden;">
+<div id="fb-loading" style="position:fixed;inset:0;background:#0d1117;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;">
+  <div style="width:48px;height:48px;background:linear-gradient(135deg,#238636,#3fb950);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;">⚡</div>
+  <div style="color:#e6edf3;font-size:15px;font-weight:600;">NAMSOR HYDRO</div>
+  <div style="color:#8b949e;font-size:13px;">ກຳລັງໂຫລດຂໍ້ມູນ...</div>
+  <div style="width:200px;height:3px;background:#21262d;border-radius:2px;overflow:hidden;margin-top:4px;">
+    <div style="width:60%;height:100%;background:linear-gradient(90deg,#238636,#3fb950);border-radius:2px;animation:ldbar 1.5s ease-in-out infinite;"></div>
+  </div>
+  <style>@keyframes ldbar{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}</style>
+</div>
 <div class="app">
   <aside class="sidebar" id="sidebar">
     <div class="logo" style="padding:14px 16px;display:flex;align-items:center;gap:10px;">
@@ -396,6 +506,7 @@ select.sel:focus, input.inp:focus { outline: none; border-color: var(--blue); }
     <div class="sidebar-footer">
       <div class="ver"><div class="ver-dot"></div> ລະບົບທຳງານປົກກະຕິ</div>
       <div style="margin-top:3px;font-size:10px;">ເຂື່ອນໄຟຟ້ານ້ຳຊໍ້ v3.0</div>
+      <button onclick="doLogout()" style="margin-top:10px;width:100%;background:rgba(248,81,73,0.1);border:1px solid rgba(248,81,73,0.25);color:#f85149;border-radius:6px;padding:7px;font-size:12px;cursor:pointer;font-family:var(--font);">&#128275; ອອກຈາກລະບບ</button>
     </div>
   </aside>
 
@@ -841,6 +952,19 @@ select.sel:focus, input.inp:focus { outline: none; border-color: var(--blue); }
             <div>ຄຸນສົມບັດ: <strong style="color:var(--txt)">ບັນຊີ, ກຣາຟ, ລາຍງານ, Export CSV, ເຊັນເອກະສານ</strong></div>
           </div>
         </div>
+        <div class="card" style="border-color:rgba(248,81,73,0.3);">
+          <div class="card-head"><span class="card-title" style="color:var(--red);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            ອອກຈາກລະບົບ
+          </span></div>
+          <div class="card-body">
+            <p style="font-size:13px;color:var(--txt2);margin-bottom:16px;">ກົດປຸ່ມຂ້າງລຸ່ມເພື່ອອອກຈາກລະບົບ. ທ່ານຕ້ອງ Login ໃໝ່ເພື່ອໃຊ້ລະບົບ.</p>
+            <button class="btn btn-r" style="font-size:14px;padding:10px 24px;" onclick="handleLogout()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              ອອກຈາກລະບົບ (Logout)
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </main>
@@ -889,6 +1013,13 @@ select.sel:focus, input.inp:focus { outline: none; border-color: var(--blue); }
 <script>
 
 // ===== RECEIPT HELPERS =====
+function handleLogout() {
+  if (!confirm('ທ່ານຕ້ອງການອອກຈາກລະບົບແທ້ບໍ?')) return;
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('currentUser');
+  window.location.href = 'login.html';
+}
+
 function previewReceipt(inputId, previewId, wrapId) {
   const file = document.getElementById(inputId).files[0];
   if (!file) return;
@@ -997,34 +1128,15 @@ function loadTableReceipts() {
 
 // ===== ລະບົບໂຫລດຂໍ້ມູນ (ປັບປຸງໃໝ່ປ້ອງກັນຂໍ້ມູນຫາຍ) =====
 let db = [];
-try { 
-  const rawData = localStorage.getItem('acc_v2');
-  db = rawData ? JSON.parse(rawData) : [];
-  if (!Array.isArray(db)) db = []; 
-} catch(e) { db = []; }
-
 let purchaseItems = [];
-try {
-  const rawP = localStorage.getItem('namSorPurchaseItems');
-  purchaseItems = rawP ? JSON.parse(rawP) : [];
-  if (!Array.isArray(purchaseItems)) purchaseItems = [];
-} catch(e) { purchaseItems = []; }
-
 let budgetData = {};
-try { 
-  const rawB = localStorage.getItem('namSorBudget_v1');
-  budgetData = rawB ? JSON.parse(rawB) : {}; 
-} catch(e) { budgetData = {}; }
-
 let sigData = {};
-try { 
-  const rawS = localStorage.getItem('sigData_v2');
-  sigData = rawS ? JSON.parse(rawS) : {}; 
-} catch(e) { sigData = {}; }
+let _fsBootDone = false;  // GUARD: never write until Firestore data loaded
 
-function save() { localStorage.setItem('acc_v2', JSON.stringify(db)); }
-function saveBudget() { localStorage.setItem('namSorBudget_v1', JSON.stringify(budgetData)); }
-function saveSigs() { localStorage.setItem('sigData_v2', JSON.stringify(sigData)); }
+function save()        { if (_fsBootDone && window.fsSet) window.fsSet('acc_v2', db); }
+function saveBudget()  { if (_fsBootDone && window.fsSet) window.fsSet('budget_v1', budgetData); }
+function saveSigs()    { if (_fsBootDone && window.fsSet) window.fsSet('sigData_v2', sigData); }
+function savePurchase(){ if (_fsBootDone && window.fsSet) window.fsSet('purchaseItems', purchaseItems); }
 
 function getBudgetKey() {
   const m = document.getElementById('bMonth');
@@ -1409,7 +1521,7 @@ function addPurchaseRow() {
 
     saveReceiptPromise.then(() => {
       purchaseItems.push({ date, name, qty, price, unit, note, receiptId });
-      localStorage.setItem('namSorPurchaseItems', JSON.stringify(purchaseItems));
+      savePurchase();
       
       document.getElementById('pName').value = '';
       document.getElementById('pQty').value = '1';
@@ -1428,7 +1540,7 @@ function deletePurchaseItem(index) {
         const rid = purchaseItems[index] && purchaseItems[index].receiptId;
         if (rid) deleteReceipt(rid);
         purchaseItems.splice(index, 1);
-        localStorage.setItem('namSorPurchaseItems', JSON.stringify(purchaseItems));
+        savePurchase();
         renderPurchaseTable();
         showToast('🗑️ ລຶບລາຍການແລ້ວ');
     }
@@ -2050,7 +2162,14 @@ function buildYears(id, def) {
   }
 }
 
-window.onload = () => {
+window._appBoot = () => {
+  // ===== Populate live vars from Firestore-loaded data =====
+  db            = Array.isArray(window._db_init)                                       ? window._db_init       : [];
+  purchaseItems = Array.isArray(window._purchase_init)                                 ? window._purchase_init : [];
+  budgetData    = (window._budget_init && typeof window._budget_init === 'object')     ? window._budget_init   : {};
+  sigData       = (window._sig_init    && typeof window._sig_init    === 'object')     ? window._sig_init      : {};
+  _fsBootDone = true; window._fsBootDone = true; // NOW safe to call save() functions
+
   const t = new Date();
   const cm = String(t.getMonth()+1).padStart(2,'0'), cy = t.getFullYear();
   document.getElementById('selMonth').value = cm;
@@ -2060,26 +2179,8 @@ window.onload = () => {
   buildYears('chartYear', cy);
   document.getElementById('hDate').textContent = t.toLocaleDateString('lo-LA',{weekday:'short',year:'numeric',month:'long',day:'numeric'});
 
-  if(document.getElementById('pDate')) {
-      document.getElementById('pDate').value = t.toISOString().split('T')[0];
-  }
-
-  // ===== ປ້ອງກັນຂໍ້ມູນຫາຍ ແລະ ດຶງຂໍ້ມູນເກົ່າມາໃຊ້ຄັ້ງດຽວ (ແກ້ບັນຫາລົບແລ້ວກັບມາ) =====
-  if (!localStorage.getItem('v1_migrated')) {
-    if (db.length === 0) {
-      try { 
-        const old = localStorage.getItem('accountingData_v1'); 
-        if(old && old !== '[]'){
-          const parsedOld = JSON.parse(old);
-          if (Array.isArray(parsedOld) && parsedOld.length > 0) {
-            db = parsedOld;
-            save(); // ບັນທຶກລົງ acc_v2 ໃໝ່
-          }
-        } 
-      } catch(e){}
-    }
-    // ໝາຍໄວ້ວ່າໄດ້ທຳການກວດສອບ ແລະ ດຶງຂໍ້ມູນແລ້ວ
-    localStorage.setItem('v1_migrated', 'true');
+  if (document.getElementById('pDate')) {
+    document.getElementById('pDate').value = t.toISOString().split('T')[0];
   }
 
   const lastPage = sessionStorage.getItem('activePage') || 'dashboard';
