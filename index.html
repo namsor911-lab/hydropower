@@ -58,9 +58,9 @@ body { font-family: var(--font); background: var(--bg); color: var(--txt); min-h
 .pg-title { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
 .pg-sub { font-size: 13px; color: var(--txt2); margin-top: 4px; }
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 12px; margin-bottom: 20px; }
-.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 16px; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 16px; text-align: center; }
 .stat-lbl { font-size: 12px; color: var(--txt2); margin-bottom: 8px; }
-.stat-val { font-size: 22px; font-weight: 700; font-family: var(--mono); letter-spacing: -1px; }
+.stat-val { font-size: 22px; font-weight: 700; font-family: var(--mono); letter-spacing: -1px; text-align: center; display: flex; align-items: baseline; justify-content: center; gap: 4px; }
 .stat-val.g { color: var(--green); }
 .stat-val.r { color: var(--red); }
 .stat-val.b { color: var(--blue); }
@@ -334,10 +334,18 @@ select.sel:focus, input.inp:focus { outline: none; border-color: var(--blue); }
   .dash-grid { grid-template-columns: 1fr; }
 }
 </style>
+  <script>if(!localStorage.getItem("authToken")){window.location.replace("login.html");}</script>
 </head>
 <body>
 <div class="app">
   <aside class="sidebar" id="sidebar">
+    <div class="logo" style="padding:14px 16px;display:flex;align-items:center;gap:10px;">
+      <div class="logo-icon">⚡</div>
+      <div>
+        <div class="logo-name">NAMSOR <span>HYDRO</span></div>
+        <div class="logo-sub">NAMSOR HYDROPOWER</div>
+      </div>
+    </div>
     <nav class="nav">
       <div class="nav-sec-label">ໜ້າຫຼັກ</div>
       <div class="nav-item nav-item-main active" data-page="dashboard" onclick="go('dashboard')">
@@ -403,6 +411,13 @@ select.sel:focus, input.inp:focus { outline: none; border-color: var(--blue); }
     <div class="content">
 
       <div class="page active" id="page-dashboard">
+        <div style="background:linear-gradient(135deg,#1d6a2e 0%,#238636 60%,#2ea043 100%);border-radius:var(--r2);padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;gap:14px;">
+          <div style="width:44px;height:44px;background:rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">⚡</div>
+          <div>
+            <div style="font-size:18px;font-weight:800;color:#fff;letter-spacing:0.5px;">NAMSOR HYDROPOWER</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.75);margin-top:2px;">ເຂື່ອນໄຟຟ້ານ້ຳຊໍ້ — ລະບົບບັນຊີລາຍຮັບ-ລາຍຈ່າຍ</div>
+          </div>
+        </div>
         <div class="pg-head">
           <div class="pg-title">ພາບລວມການເງິນ</div>
           <div class="pg-sub">ສະຫຼຸບ — <span id="dashMonth"></span></div>
@@ -630,7 +645,7 @@ select.sel:focus, input.inp:focus { outline: none; border-color: var(--blue); }
             <div class="stat-val g" id="endBal" style="font-size:18px;">0 ₭</div>
           </div>
           <div class="stat-card">
-            <div class="stat-lbl">ຍອດລ້ວາດ (ທຸກເດືອນ)</div>
+            <div class="stat-lbl">ຍອດລວມ (ທຸກເດືອນ)</div>
             <div class="stat-val b" id="allBal" style="font-size:18px;">0 ₭</div>
           </div>
         </div>
